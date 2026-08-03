@@ -2,23 +2,24 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-
 <meta name="viewport"
-      content="width=device-width,
-               initial-scale=1,
-               maximum-scale=1,
-               user-scalable=no,
-               viewport-fit=cover">
-
-<meta name="theme-color" content="#07100c">
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 
 <title>ISL Penalty Shootout</title>
 
 <style>
+:root{
+    --accent:#f6c400;
+    --accent2:#123d91;
+    --bg:#03080c;
+    --panel:rgba(4,10,16,.94);
+    --line:rgba(255,255,255,.16);
+    --muted:#9ca9b2;
+}
+
 *{
     box-sizing:border-box;
     -webkit-tap-highlight-color:transparent;
-    user-select:none;
 }
 
 html,
@@ -27,13 +28,9 @@ body{
     width:100%;
     height:100%;
     overflow:hidden;
-    background:#020604;
+    background:#020509;
     color:#fff;
-    font-family:
-        Inter,
-        Segoe UI,
-        Arial,
-        sans-serif;
+    font-family:Inter,Segoe UI,Arial,sans-serif;
 }
 
 body{
@@ -49,31 +46,24 @@ input{
 }
 
 button{
-    border:0;
-    outline:0;
     cursor:pointer;
-    touch-action:manipulation;
+    user-select:none;
+    -webkit-user-select:none;
 }
 
 #app{
-    width:100%;
-    height:100%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    width:100vw;
+    height:100dvh;
+    position:relative;
 }
 
 #gameFrame{
     position:relative;
-    width:100vw;
-    height:100vh;
+    width:100%;
+    height:100%;
     overflow:hidden;
-    background:#102d18;
+    background:#123c21;
 }
-
-/* =========================
-   CANVAS
-========================= */
 
 canvas{
     position:absolute;
@@ -84,9 +74,10 @@ canvas{
     touch-action:none;
 }
 
-/* =========================
+
+/* =========================================================
    TEAM SCREEN
-========================= */
+========================================================= */
 
 #teamScreen{
     position:absolute;
@@ -95,128 +86,109 @@ canvas{
     display:flex;
     align-items:center;
     justify-content:center;
-    padding:18px;
-
+    padding:24px;
     background:
         radial-gradient(
-            circle at 50% 15%,
-            rgba(255,255,255,.10),
+            circle at 50% 25%,
+            rgba(255,255,255,.08),
             transparent 35%
         ),
         linear-gradient(
             180deg,
-            rgba(2,7,10,.88),
-            rgba(1,4,6,.98)
+            rgba(1,5,9,.82),
+            rgba(1,5,9,.97)
         );
-
-    backdrop-filter:blur(8px);
+    backdrop-filter:blur(12px);
 }
 
 .teamPanel{
-    width:min(950px,100%);
-    max-height:96vh;
+    width:min(920px,100%);
+    max-height:94dvh;
     overflow:auto;
-
-    padding:24px;
-
+    padding:28px;
     border:1px solid rgba(255,255,255,.15);
     border-radius:18px;
-
     background:
         linear-gradient(
             180deg,
-            rgba(11,20,27,.98),
-            rgba(3,9,13,.98)
+            rgba(11,21,29,.98),
+            rgba(3,9,14,.98)
         );
-
     box-shadow:
-        0 30px 90px #000,
-        inset 0 1px rgba(255,255,255,.04);
+        0 30px 100px rgba(0,0,0,.75);
 }
 
 .gameTitle{
     text-align:center;
-    font-size:clamp(25px,5vw,48px);
-    line-height:1;
+    font-size:clamp(26px,4vw,48px);
     font-weight:1000;
     letter-spacing:2px;
 }
 
 .gameSubtitle{
     text-align:center;
-    color:#8f9ca5;
-    margin:9px 0 20px;
+    color:#8e9ca5;
     font-size:11px;
     letter-spacing:2px;
+    margin:7px 0 22px;
 }
 
 .selectionTitle{
-    margin:17px 0 9px;
-    color:#8e9ca5;
+    color:#9ba8b1;
     font-size:10px;
     font-weight:1000;
-    letter-spacing:1.8px;
+    letter-spacing:1.5px;
+    margin:18px 0 9px;
 }
 
 .teamGrid{
     display:grid;
     grid-template-columns:repeat(4,1fr);
-    gap:8px;
+    gap:9px;
 }
 
 .teamCard{
-    min-height:83px;
-    padding:10px 6px;
-
+    min-height:82px;
     border:1px solid rgba(255,255,255,.12);
-    border-radius:10px;
-
+    border-radius:11px;
     color:#fff;
-
     background:
         linear-gradient(
             180deg,
-            #15232c,
-            #091117
+            #14232d,
+            #081118
         );
-
-    transition:
-        transform .15s,
-        border .15s,
-        box-shadow .15s;
+    padding:10px 6px;
+    transition:.15s;
 }
 
 .teamCard:active{
-    transform:scale(.96);
+    transform:scale(.97);
 }
 
 .teamCard.selected{
-    border-color:#fff;
+    border-color:var(--accent);
     box-shadow:
-        0 0 0 2px var(--teamColor,#ffd21c),
-        0 8px 30px rgba(255,210,50,.15);
+        0 0 0 2px var(--accent),
+        0 0 30px rgba(255,205,40,.18);
 }
 
 .teamBadge{
     width:34px;
     height:34px;
     margin:auto;
-
     display:flex;
     align-items:center;
     justify-content:center;
-
     border-radius:50%;
-
     font-size:9px;
     font-weight:1000;
-
-    border:2px solid;
+    border:2px solid rgba(255,255,255,.5);
 }
 
 .teamName{
     margin-top:7px;
-    font-size:9px;
+    font-size:10px;
     font-weight:900;
     white-space:nowrap;
     overflow:hidden;
@@ -226,75 +198,60 @@ canvas{
 #startMatch{
     display:block;
     width:min(300px,100%);
-    height:52px;
-    margin:22px auto 0;
-
+    height:50px;
+    margin:24px auto 0;
+    border:0;
     border-radius:10px;
-
-    background:
-        linear-gradient(
-            180deg,
-            #ffe95a,
-            #d3a817
-        );
-
     color:#171200;
-
     font-size:12px;
     font-weight:1000;
     letter-spacing:1px;
-
-    box-shadow:
-        0 8px 25px rgba(255,205,40,.15);
+    background:
+        linear-gradient(
+            180deg,
+            #ffe75c,
+            #d9aa16
+        );
 }
 
 #startMatch:disabled{
     opacity:.3;
-    cursor:not-allowed;
 }
 
-/* =========================
+
+/* =========================================================
    TOP HUD
-========================= */
+========================================================= */
 
 #topHUD{
     position:absolute;
     z-index:100;
-
-    left:12px;
-    right:12px;
-    top:calc(10px + env(safe-area-inset-top));
-
-    display:flex;
-    align-items:flex-start;
-    justify-content:space-between;
-
+    top:max(10px,env(safe-area-inset-top));
+    left:max(10px,env(safe-area-inset-left));
+    right:max(10px,env(safe-area-inset-right));
+    display:grid;
+    grid-template-columns:minmax(240px,390px) 1fr auto;
+    align-items:start;
+    gap:12px;
     pointer-events:none;
 }
 
 .scoreBox{
-    width:330px;
-    max-width:55vw;
-
-    background:rgba(3,9,14,.91);
-
+    width:100%;
     border:1px solid rgba(255,255,255,.16);
-    border-radius:8px;
-
+    border-radius:9px;
     overflow:hidden;
-
-    box-shadow:0 10px 35px #0009;
-
-    backdrop-filter:blur(10px);
+    background:rgba(4,10,16,.94);
+    box-shadow:0 10px 30px rgba(0,0,0,.4);
+    backdrop-filter:blur(12px);
 }
 
 .scoreTeam{
+    height:48px;
     display:grid;
-    grid-template-columns:65px 1fr 46px;
-
-    height:43px;
-
-    border-bottom:1px solid rgba(255,255,255,.10);
+    grid-template-columns:64px 1fr 48px;
+    align-items:stretch;
+    border-bottom:1px solid rgba(255,255,255,.1);
 }
 
 .scoreTeam:last-child{
@@ -305,7 +262,6 @@ canvas{
     display:flex;
     align-items:center;
     justify-content:center;
-
     font-size:12px;
     font-weight:1000;
 }
@@ -314,55 +270,46 @@ canvas{
     display:flex;
     align-items:center;
     justify-content:center;
-    gap:4px;
+    gap:5px;
 }
 
 .slot{
-    width:21px;
-    height:14px;
-
-    border:1px solid rgba(255,255,255,.45);
-
-    background:#58636a;
+    width:22px;
+    height:15px;
+    border:1px solid #8b969c;
+    background:#5b656b;
+    border-radius:1px;
 }
 
 .slot.goal{
-    background:#1ed776;
-    border-color:#8effbc;
+    background:#1bd678;
+    border-color:#8dffc0;
 }
 
 .slot.miss{
-    background:#e84755;
-    border-color:#ff9ea7;
+    background:#e84959;
+    border-color:#ff9da7;
 }
 
 .scoreNumber{
     display:flex;
     align-items:center;
     justify-content:center;
-
-    background:#f5d51a;
-    color:#101010;
-
+    background:var(--accent);
+    color:#111;
     font-size:21px;
     font-weight:1000;
 }
 
 #centerInfo{
-    position:absolute;
-    left:50%;
-    transform:translateX(-50%);
-
-    padding:7px 16px;
-
+    justify-self:center;
+    min-width:175px;
+    text-align:center;
+    padding:8px 18px;
     border:1px solid rgba(255,255,255,.14);
     border-radius:30px;
-
-    background:rgba(3,9,14,.85);
-
-    text-align:center;
-
-    backdrop-filter:blur(10px);
+    background:rgba(3,9,14,.9);
+    box-shadow:0 10px 30px #0007;
 }
 
 #centerInfo small{
@@ -378,282 +325,388 @@ canvas{
 
 #gameButtons{
     display:flex;
-    gap:5px;
+    gap:6px;
     pointer-events:auto;
 }
 
 .smallBtn{
-    height:37px;
-    padding:0 12px;
-
+    height:38px;
+    padding:0 13px;
     border:1px solid rgba(255,255,255,.18);
-    border-radius:7px;
-
+    border-radius:8px;
+    background:rgba(5,13,20,.95);
     color:#fff;
-    background:rgba(4,12,18,.92);
-
-    font-size:8px;
+    font-size:9px;
     font-weight:1000;
 }
 
 #resetBtn{
-    background:#b92f40;
+    background:#bd3444;
 }
 
-/* =========================
+
+/* =========================================================
    STATUS
-========================= */
+========================================================= */
 
 #statusBox{
     position:absolute;
     z-index:90;
-
+    top:88px;
     left:50%;
-    top:82px;
-
     transform:translateX(-50%);
-
-    min-width:270px;
-    padding:8px 17px;
-
-    border:1px solid rgba(255,255,255,.13);
-    border-radius:11px;
-
-    background:rgba(2,8,12,.72);
-
+    width:min(360px,calc(100% - 30px));
+    padding:10px 16px;
     text-align:center;
-
-    backdrop-filter:blur(8px);
-
-    pointer-events:none;
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:13px;
+    background:rgba(3,9,14,.88);
+    backdrop-filter:blur(10px);
+    box-shadow:0 10px 30px #0006;
 }
 
 #statusMain{
     font-size:18px;
     font-weight:1000;
-    letter-spacing:1px;
+    letter-spacing:.5px;
 }
 
 #statusSub{
     margin-top:3px;
-    color:#a5b0b6;
+    color:#a9b5bc;
     font-size:9px;
 }
 
-/* =========================
+
+/* =========================================================
    DIFFICULTY
-========================= */
+========================================================= */
 
 #difficultyBox{
     position:absolute;
-    z-index:100;
-
-    right:12px;
-    top:60px;
-
+    z-index:110;
+    right:max(10px,env(safe-area-inset-right));
+    top:64px;
     display:none;
     align-items:center;
     gap:6px;
-
-    padding:6px 9px;
-
+    padding:7px 10px;
     border:1px solid rgba(255,255,255,.14);
-    border-radius:7px;
-
-    background:rgba(3,9,14,.88);
+    border-radius:8px;
+    background:rgba(4,11,17,.93);
 }
 
 #difficultyBox span{
-    color:#8c999f;
+    color:#8c9aa4;
     font-size:7px;
-    font-weight:900;
+    font-weight:1000;
 }
 
 #difficulty{
     border:0;
     outline:0;
     background:transparent;
-    color:white;
-
+    color:#fff;
     font-size:8px;
     font-weight:1000;
 }
 
-/* =========================
+
+/* =========================================================
    SHOOT CONTROLS
-========================= */
+========================================================= */
 
 #shootControls{
     position:absolute;
     z-index:120;
-
     left:50%;
-    bottom:calc(10px + env(safe-area-inset-bottom));
-
+    bottom:max(18px,env(safe-area-inset-bottom));
     transform:translateX(-50%);
-
     display:none;
+    width:min(310px,calc(100% - 30px));
     flex-direction:column;
     align-items:center;
-
     gap:7px;
 }
 
 .zoneGrid{
+    width:100%;
     display:grid;
-    grid-template-columns:repeat(3,70px);
+    grid-template-columns:repeat(3,1fr);
     gap:5px;
 }
 
 .zone{
-    height:35px;
-
-    border:1px solid rgba(255,255,255,.20);
+    height:38px;
+    border:1px solid rgba(255,255,255,.2);
     border-radius:7px;
-
-    color:white;
-
-    background:rgba(3,10,15,.93);
-
+    background:rgba(4,12,18,.95);
+    color:#fff;
     font-size:8px;
     font-weight:1000;
 }
 
+.zone:active{
+    transform:scale(.96);
+}
+
 .zone.selected{
-    background:var(--accent,#ffd21c);
-    color:#101010;
-
-    border-color:white;
-
-    box-shadow:
-        0 0 14px rgba(255,220,50,.22);
+    color:#111;
+    background:var(--accent);
+    border-color:#fff4a0;
+    box-shadow:0 0 14px rgba(255,210,30,.25);
 }
 
 .powerWrap{
-    width:220px;
-    padding:5px 9px;
-
-    border:1px solid rgba(255,255,255,.18);
+    width:100%;
+    padding:6px 10px;
     border-radius:20px;
+    border:1px solid rgba(255,255,255,.18);
+    background:rgba(4,10,15,.94);
+}
 
-    background:rgba(3,9,14,.91);
+.powerHeader{
+    display:flex;
+    justify-content:space-between;
+    color:#9daab2;
+    font-size:7px;
+    margin-bottom:2px;
 }
 
 #power{
     width:100%;
-    accent-color:var(--accent,#ffd21c);
-}
-
-.powerLabel{
-    display:flex;
-    justify-content:space-between;
-
-    margin-bottom:1px;
-
-    color:#9ba7ad;
-    font-size:7px;
-}
-
-#powerValue{
-    color:#fff;
+    accent-color:var(--accent);
 }
 
 #shootBtn{
-    width:155px;
-    height:42px;
-
-    border-radius:8px;
-
-    background:
-        linear-gradient(
-            180deg,
-            #ffe95d,
-            #d1a514
-        );
-
-    color:#151200;
-
-    font-size:10px;
+    width:180px;
+    height:44px;
+    border:0;
+    border-radius:9px;
+    background:linear-gradient(180deg,#ffe867,#d9a917);
+    color:#171200;
+    font-size:11px;
     font-weight:1000;
     letter-spacing:1px;
+    box-shadow:0 7px 20px rgba(0,0,0,.35);
 }
 
-/* =========================
-   DEFEND CONTROLS
-========================= */
+#shootBtn:active{
+    transform:scale(.97);
+}
+
+
+/* =========================================================
+   DEFEND
+========================================================= */
 
 #defendControls{
     position:absolute;
     z-index:120;
-
     left:50%;
-    bottom:calc(12px + env(safe-area-inset-bottom));
-
+    bottom:max(18px,env(safe-area-inset-bottom));
     transform:translateX(-50%);
-
+    width:min(360px,calc(100% - 30px));
     display:none;
-
+    grid-template-columns:repeat(3,1fr);
     gap:7px;
 }
 
 .diveBtn{
-    min-width:100px;
     height:46px;
-
-    border:1px solid rgba(255,255,255,.22);
+    border:1px solid rgba(255,255,255,.2);
     border-radius:8px;
-
-    color:white;
-
-    background:rgba(3,10,15,.94);
-
+    background:rgba(4,12,18,.96);
+    color:#fff;
     font-size:9px;
     font-weight:1000;
 }
 
-.diveBtn.center{
-    background:
-        linear-gradient(
-            180deg,
-            #2cdb78,
-            #119b50
-        );
-
-    color:#03170b;
+.diveBtn:active{
+    transform:scale(.96);
 }
 
-/* =========================
+.diveBtn.center{
+    background:linear-gradient(180deg,#32dc7a,#109d54);
+    color:#03170a;
+}
+
+
+/* =========================================================
+   DESKTOP FIELD
+========================================================= */
+
+@media(min-width:701px){
+
+    #gameFrame{
+        aspect-ratio:16/9;
+        height:auto;
+        max-height:100dvh;
+    }
+
+    #app{
+        width:min(100vw,177.78dvh);
+        height:min(100dvh,56.25vw);
+    }
+}
+
+
+/* =========================================================
    MOBILE PORTRAIT
-========================= */
+========================================================= */
 
 @media(max-width:700px){
 
+    #app,
+    #gameFrame{
+        width:100vw;
+        height:100dvh;
+    }
+
+    #topHUD{
+        top:max(6px,env(safe-area-inset-top));
+        left:6px;
+        right:6px;
+        grid-template-columns:1fr auto;
+        gap:5px;
+    }
+
+    .scoreBox{
+        grid-column:1 / -1;
+        width:100%;
+    }
+
+    .scoreTeam{
+        height:34px;
+        grid-template-columns:48px 1fr 38px;
+    }
+
+    .scoreName{
+        font-size:9px;
+    }
+
+    .scoreSlots{
+        gap:3px;
+    }
+
+    .slot{
+        width:18px;
+        height:11px;
+    }
+
+    .scoreNumber{
+        font-size:16px;
+    }
+
+    #centerInfo{
+        grid-column:1;
+        grid-row:2;
+        justify-self:start;
+        min-width:120px;
+        padding:6px 10px;
+    }
+
+    #centerInfo small{
+        font-size:5px;
+    }
+
+    #centerInfo strong{
+        font-size:9px;
+    }
+
+    #gameButtons{
+        grid-column:2;
+        grid-row:2;
+        justify-self:end;
+    }
+
+    .smallBtn{
+        height:30px;
+        padding:0 9px;
+        font-size:7px;
+    }
+
+    #statusBox{
+        top:104px;
+        width:min(310px,calc(100% - 30px));
+        padding:7px 10px;
+    }
+
+    #statusMain{
+        font-size:13px;
+    }
+
+    #statusSub{
+        font-size:7px;
+    }
+
+    #difficultyBox{
+        top:auto;
+        bottom:max(9px,env(safe-area-inset-bottom));
+        left:7px;
+        right:auto;
+        padding:6px 8px;
+    }
+
+    #difficultyBox span{
+        font-size:6px;
+    }
+
+    #difficulty{
+        font-size:7px;
+    }
+
+    #shootControls{
+        bottom:max(8px,env(safe-area-inset-bottom));
+        width:min(330px,calc(100% - 26px));
+        gap:5px;
+    }
+
+    .zoneGrid{
+        gap:4px;
+    }
+
+    .zone{
+        height:38px;
+        font-size:7px;
+    }
+
+    .powerWrap{
+        padding:5px 9px;
+    }
+
+    #shootBtn{
+        width:170px;
+        height:40px;
+    }
+
+    #defendControls{
+        bottom:max(10px,env(safe-area-inset-bottom));
+        width:min(350px,calc(100% - 22px));
+    }
+
+    .diveBtn{
+        height:42px;
+        font-size:8px;
+    }
+
     #teamScreen{
-        padding:
-            max(8px,env(safe-area-inset-top))
-            8px
-            max(8px,env(safe-area-inset-bottom))
-            8px;
+        padding:8px;
     }
 
     .teamPanel{
-        padding:14px;
-        max-height:98vh;
-        border-radius:13px;
+        max-height:96dvh;
+        padding:16px 12px;
+        border-radius:14px;
     }
 
     .gameTitle{
-        font-size:25px;
+        font-size:24px;
     }
 
     .gameSubtitle{
-        font-size:7px;
-        margin:6px 0 12px;
-    }
-
-    .selectionTitle{
-        margin:10px 0 6px;
         font-size:8px;
+        margin-bottom:12px;
     }
 
     .teamGrid{
@@ -664,261 +717,115 @@ canvas{
     .teamCard{
         min-height:62px;
         padding:6px 3px;
-        border-radius:7px;
     }
 
     .teamBadge{
-        width:25px;
-        height:25px;
+        width:26px;
+        height:26px;
         font-size:7px;
     }
 
     .teamName{
+        font-size:7px;
         margin-top:4px;
-        font-size:6px;
     }
 
     #startMatch{
-        height:43px;
-        margin-top:12px;
-        font-size:9px;
-    }
-
-    #topHUD{
-        top:calc(5px + env(safe-area-inset-top));
-        left:5px;
-        right:5px;
-    }
-
-    .scoreBox{
-        width:220px;
-        max-width:65vw;
-    }
-
-    .scoreTeam{
-        height:30px;
-        grid-template-columns:43px 1fr 30px;
-    }
-
-    .scoreName{
-        font-size:8px;
-    }
-
-    .slot{
-        width:13px;
-        height:9px;
-    }
-
-    .scoreSlots{
-        gap:2px;
-    }
-
-    .scoreNumber{
-        font-size:14px;
-    }
-
-    #centerInfo{
-        display:none;
-    }
-
-    #gameButtons{
-        gap:3px;
-    }
-
-    .smallBtn{
-        height:28px;
-        padding:0 7px;
-        font-size:6px;
-    }
-
-    #statusBox{
-        top:43px;
-        min-width:175px;
-        max-width:70vw;
-        padding:5px 8px;
-    }
-
-    #statusMain{
-        font-size:11px;
-    }
-
-    #statusSub{
-        font-size:6px;
-    }
-
-    #difficultyBox{
-        top:36px;
-        right:5px;
-        padding:4px 6px;
-    }
-
-    #difficultyBox span{
-        font-size:5px;
-    }
-
-    #difficulty{
-        font-size:6px;
-    }
-
-    #shootControls{
-        bottom:calc(5px + env(safe-area-inset-bottom));
-        gap:4px;
-    }
-
-    .zoneGrid{
-        grid-template-columns:repeat(3,58px);
-        gap:3px;
-    }
-
-    .zone{
-        height:28px;
-        font-size:6px;
-    }
-
-    .powerWrap{
-        width:185px;
-        padding:3px 7px;
-    }
-
-    .powerLabel{
-        font-size:6px;
-    }
-
-    #shootBtn{
-        width:130px;
-        height:35px;
-        font-size:8px;
-    }
-
-    #defendControls{
-        bottom:calc(6px + env(safe-area-inset-bottom));
-        gap:3px;
-    }
-
-    .diveBtn{
-        min-width:75px;
-        height:35px;
-        font-size:6px;
+        height:44px;
+        margin-top:16px;
     }
 }
 
-/* =========================
+
+/* =========================================================
    VERY SMALL PHONES
-========================= */
+========================================================= */
 
 @media(max-width:380px){
 
-    .teamPanel{
-        padding:10px;
+    .scoreTeam{
+        height:31px;
+        grid-template-columns:43px 1fr 34px;
     }
 
-    .teamGrid{
-        gap:3px;
+    .slot{
+        width:14px;
+        height:9px;
     }
 
-    .teamCard{
-        min-height:55px;
+    #statusBox{
+        top:96px;
     }
 
-    .teamBadge{
-        width:22px;
-        height:22px;
-    }
-
-    .zoneGrid{
-        grid-template-columns:repeat(3,51px);
+    #shootControls{
+        width:calc(100% - 18px);
     }
 
     .zone{
-        height:25px;
-        font-size:5px;
-    }
-
-    .powerWrap{
-        width:165px;
+        height:34px;
+        font-size:6px;
     }
 
     #shootBtn{
-        height:32px;
+        height:38px;
+    }
+
+    .powerWrap{
+        padding:3px 7px;
     }
 }
 
-/* =========================
-   LANDSCAPE MOBILE
-========================= */
 
-@media(
-    max-width:900px
-) and (
-    orientation:landscape
-){
+/* =========================================================
+   LANDSCAPE PHONE
+========================================================= */
 
-    #shootControls{
-        left:auto;
-        right:12px;
-        transform:none;
-        bottom:8px;
+@media(max-width:900px) and (orientation:landscape){
+
+    #topHUD{
+        top:4px;
     }
 
-    #defendControls{
-        left:auto;
-        right:12px;
-        transform:none;
-        bottom:10px;
+    .scoreBox{
+        max-width:300px;
     }
 
-    .zoneGrid{
-        grid-template-columns:repeat(3,55px);
-    }
-
-    .zone{
+    .scoreTeam{
         height:28px;
     }
 
-    .powerWrap{
-        width:175px;
-    }
-
-    #shootBtn{
-        width:125px;
-        height:35px;
+    #centerInfo{
+        padding:5px 10px;
     }
 
     #statusBox{
         top:55px;
     }
-}
 
-/* =========================
-   FULLSCREEN BUTTON
-========================= */
-
-#fullscreenBtn{
-    position:absolute;
-    z-index:130;
-
-    right:10px;
-    bottom:10px;
-
-    width:38px;
-    height:32px;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    border:1px solid rgba(255,255,255,.18);
-    border-radius:7px;
-
-    background:rgba(3,9,14,.75);
-    color:white;
-
-    font-size:14px;
-}
-
-@media(max-width:700px){
-    #fullscreenBtn{
+    #shootControls{
+        width:260px;
+        bottom:5px;
         display:none;
+    }
+
+    .zone{
+        height:27px;
+    }
+
+    #shootBtn{
+        height:31px;
+    }
+
+    .powerWrap{
+        padding:2px 7px;
+    }
+
+    #defendControls{
+        bottom:7px;
+    }
+
+    .diveBtn{
+        height:32px;
     }
 }
 </style>
@@ -932,9 +839,10 @@ canvas{
 
 <canvas id="game"></canvas>
 
-<!-- =========================
+
+<!-- =====================================================
      TEAM SELECTION
-========================= -->
+===================================================== -->
 
 <div id="teamScreen">
 
@@ -967,9 +875,10 @@ canvas{
 </div>
 </div>
 
-<!-- =========================
+
+<!-- =====================================================
      HUD
-========================= -->
+===================================================== -->
 
 <div id="topHUD">
 
@@ -978,13 +887,13 @@ canvas{
 <div class="scoreTeam">
 
 <div class="scoreName" id="yourName">
-YOU
+    YOU
 </div>
 
 <div class="scoreSlots" id="yourSlots"></div>
 
 <div class="scoreNumber" id="yourScore">
-0
+    0
 </div>
 
 </div>
@@ -992,18 +901,19 @@ YOU
 <div class="scoreTeam">
 
 <div class="scoreName" id="oppName">
-CPU
+    CPU
 </div>
 
 <div class="scoreSlots" id="oppSlots"></div>
 
 <div class="scoreNumber" id="oppScore">
-0
+    0
 </div>
 
 </div>
 
 </div>
+
 
 <div id="centerInfo">
 
@@ -1012,46 +922,48 @@ ISL PENALTY SHOOTOUT
 </small>
 
 <strong>
-ROUND <span id="round">1</span>
-/
+ROUND <span id="round">1</span> /
 <span id="maxRound">5</span>
 </strong>
 
 </div>
 
+
 <div id="gameButtons">
 
 <button class="smallBtn" id="changeTeams">
-TEAMS
+    TEAMS
 </button>
 
 <button class="smallBtn" id="resetBtn">
-RESET
+    RESET
 </button>
 
 </div>
 
 </div>
 
-<!-- =========================
+
+<!-- =====================================================
      STATUS
-========================= -->
+===================================================== -->
 
 <div id="statusBox">
 
 <div id="statusMain">
-SELECT TEAMS
+    SELECT TEAMS
 </div>
 
 <div id="statusSub">
-Choose your team and opponent
+    Choose your team and opponent
 </div>
 
 </div>
 
-<!-- =========================
+
+<!-- =====================================================
      DIFFICULTY
-========================= -->
+===================================================== -->
 
 <div id="difficultyBox">
 
@@ -1077,9 +989,10 @@ HARD
 
 </div>
 
-<!-- =========================
+
+<!-- =====================================================
      SHOOT CONTROLS
-========================= -->
+===================================================== -->
 
 <div id="shootControls">
 
@@ -1087,63 +1000,64 @@ HARD
 
 <button class="zone"
         data-x="-2.8"
-        data-z="2.0">
-↖ HIGH
+        data-z="2.05">
+    ↖ HIGH
 </button>
 
 <button class="zone"
         data-x="0"
-        data-z="2.0">
-↑ HIGH
+        data-z="2.05">
+    ↑ HIGH
 </button>
 
 <button class="zone"
         data-x="2.8"
-        data-z="2.0">
-↗ HIGH
+        data-z="2.05">
+    ↗ HIGH
 </button>
 
 <button class="zone"
         data-x="-2.8"
         data-z="1.15">
-← MID
+    ← MID
 </button>
 
 <button class="zone selected"
         data-x="0"
         data-z="1.15">
-CENTER
+    CENTER
 </button>
 
 <button class="zone"
         data-x="2.8"
         data-z="1.15">
-MID →
+    MID →
 </button>
 
 <button class="zone"
         data-x="-2.8"
         data-z=".35">
-↙ LOW
+    ↙ LOW
 </button>
 
 <button class="zone"
         data-x="0"
         data-z=".35">
-↓ LOW
+    ↓ LOW
 </button>
 
 <button class="zone"
         data-x="2.8"
         data-z=".35">
-↘ LOW
+    ↘ LOW
 </button>
 
 </div>
 
+
 <div class="powerWrap">
 
-<div class="powerLabel">
+<div class="powerHeader">
 
 <span>
 SHOT POWER
@@ -1164,48 +1078,44 @@ SHOT POWER
 
 </div>
 
+
 <button id="shootBtn">
-SHOOT
+    SHOOT
 </button>
 
 </div>
 
-<!-- =========================
-     DEFEND
-========================= -->
+
+<!-- =====================================================
+     DEFEND CONTROLS
+===================================================== -->
 
 <div id="defendControls">
 
-<button class="diveBtn"
-        data-dir="-1">
-← LEFT
+<button class="diveBtn" data-dir="-1">
+    ← LEFT
 </button>
 
-<button class="diveBtn center"
-        data-dir="0">
-CENTER
+<button class="diveBtn center" data-dir="0">
+    CENTER
 </button>
 
-<button class="diveBtn"
-        data-dir="1">
-RIGHT →
+<button class="diveBtn" data-dir="1">
+    RIGHT →
 </button>
 
 </div>
 
-<button id="fullscreenBtn">
-⛶
-</button>
+</div>
+</div>
 
-</div>
-</div>
 
 <script>
 "use strict";
 
-/* =====================================================
+/* =========================================================
    CANVAS
-===================================================== */
+========================================================= */
 
 const canvas =
     document.getElementById("game");
@@ -1217,185 +1127,117 @@ const $ =
     id => document.getElementById(id);
 
 const clamp =
-    (v,min,max)=>
-        Math.max(min,Math.min(max,v));
+    (v,a,b)=>Math.max(a,Math.min(b,v));
 
 const lerp =
-    (a,b,t)=>
-        a+(b-a)*t;
+    (a,b,t)=>a+(b-a)*t;
 
 const rand =
-    (a,b)=>
-        a+Math.random()*(b-a);
+    (a,b)=>a+Math.random()*(b-a);
 
-const easeOut =
-    t =>
-        1-Math.pow(1-t,3);
+const ease =
+    t=>1-Math.pow(1-t,3);
 
 
-/* =====================================================
-   RESPONSIVE CANVAS
-===================================================== */
-
-let W=1280;
-let H=720;
-
-function resizeCanvas(){
-
-    const rect =
-        canvas.getBoundingClientRect();
-
-    const dpr =
-        Math.min(
-            window.devicePixelRatio || 1,
-            2
-        );
-
-    W =
-        Math.max(
-            320,
-            Math.floor(rect.width*dpr)
-        );
-
-    H =
-        Math.max(
-            240,
-            Math.floor(rect.height*dpr)
-        );
-
-    canvas.width=W;
-    canvas.height=H;
-}
-
-window.addEventListener(
-    "resize",
-    resizeCanvas
-);
-
-window.addEventListener(
-    "orientationchange",
-    ()=>{
-        setTimeout(
-            resizeCanvas,
-            100
-        );
-    }
-);
-
-resizeCanvas();
-
-
-/* =====================================================
+/* =========================================================
    TEAMS
-===================================================== */
+========================================================= */
 
 const TEAMS={
 
     kbfc:{
         name:"Kerala Blasters",
         short:"KBFC",
-        primary:"#f5c400",
-        secondary:"#173f91",
-        keeper:"#ffcf18",
+        primary:"#f4c400",
+        secondary:"#123d91",
         badge:"KB"
     },
 
     mbsg:{
         name:"Mohun Bagan",
         short:"MBSG",
-        primary:"#008b50",
-        secondary:"#8b1946",
-        keeper:"#10a564",
+        primary:"#008f52",
+        secondary:"#7b173d",
         badge:"MB"
     },
 
     mumbai:{
         name:"Mumbai City",
         short:"MCFC",
-        primary:"#75c9ec",
-        secondary:"#123d73",
-        keeper:"#71c7ea",
+        primary:"#72c8e8",
+        secondary:"#143e76",
         badge:"MC"
     },
 
     bengaluru:{
         name:"Bengaluru FC",
         short:"BFC",
-        primary:"#0872c9",
-        secondary:"#e9edf0",
-        keeper:"#0a7cd8",
+        primary:"#0874c9",
+        secondary:"#e9edf2",
         badge:"BFC"
     },
 
     eastbengal:{
         name:"East Bengal",
         short:"EBFC",
-        primary:"#df382f",
-        secondary:"#f4c400",
-        keeper:"#e63b32",
+        primary:"#e33732",
+        secondary:"#f5c400",
         badge:"EB"
     },
 
     goa:{
         name:"FC Goa",
         short:"FCG",
-        primary:"#e66b18",
-        secondary:"#273f8d",
-        keeper:"#f07b20",
+        primary:"#ed7418",
+        secondary:"#243b87",
         badge:"GOA"
     },
 
     chennaiyin:{
         name:"Chennaiyin FC",
         short:"CFC",
-        primary:"#087bb9",
-        secondary:"#112f61",
-        keeper:"#0b8bcb",
+        primary:"#087bbb",
+        secondary:"#102f61",
         badge:"CFC"
     },
 
     hyderabad:{
         name:"Hyderabad FC",
         short:"HFC",
-        primary:"#f5a900",
+        primary:"#f3a800",
         secondary:"#171717",
-        keeper:"#ffb313",
-        badge:"HFC"
+        badge:"HYD"
     },
 
     odisha:{
         name:"Odisha FC",
         short:"OFC",
-        primary:"#281b7b",
-        secondary:"#e43e48",
-        keeper:"#34248d",
-        badge:"OFC"
+        primary:"#241a78",
+        secondary:"#e43e46",
+        badge:"OD"
     },
 
     jamshedpur:{
         name:"Jamshedpur FC",
         short:"JFC",
         primary:"#d71920",
-        secondary:"#102b56",
-        keeper:"#e31e27",
+        secondary:"#102b55",
         badge:"JFC"
     },
 
     northeast:{
         name:"NorthEast United",
         short:"NEUFC",
-        primary:"#e8b21b",
-        secondary:"#152a5d",
-        keeper:"#f0bd22",
-        badge:"NEU"
+        primary:"#e8b51b",
+        secondary:"#15285d",
+        badge:"NE"
     },
 
     punjab:{
         name:"Punjab FC",
         short:"PFC",
-        primary:"#e82d3a",
-        secondary:"#f2b500",
-        keeper:"#ef3743",
+        primary:"#ed2939",
+        secondary:"#f2b300",
         badge:"PFC"
     }
 };
@@ -1404,43 +1246,30 @@ let selectedYour=null;
 let selectedOpponent=null;
 
 
-/* =====================================================
-   TEAM SELECTION
-===================================================== */
+/* =========================================================
+   TEAM UI
+========================================================= */
 
 function createTeamCards(){
 
     $("yourTeams").innerHTML="";
     $("opponentTeams").innerHTML="";
 
-    Object.entries(TEAMS)
-    .forEach(([id,team])=>{
+    Object.entries(TEAMS).forEach(([id,team])=>{
 
-        $("yourTeams")
-        .appendChild(
-            createTeamCard(
-                id,
-                team,
-                "your"
-            )
+        $("yourTeams").appendChild(
+            createTeamCard(id,team,"your")
         );
 
-        $("opponentTeams")
-        .appendChild(
-            createTeamCard(
-                id,
-                team,
-                "opponent"
-            )
+        $("opponentTeams").appendChild(
+            createTeamCard(id,team,"opponent")
         );
+
     });
 }
 
-function createTeamCard(
-    id,
-    team,
-    type
-){
+
+function createTeamCard(id,team,type){
 
     const button =
         document.createElement("button");
@@ -1449,14 +1278,12 @@ function createTeamCard(
 
     button.innerHTML=`
 
-        <div
-            class="teamBadge"
-            style="
-                background:${team.primary};
-                color:${team.secondary};
-                border-color:${team.secondary};
-            "
-        >
+        <div class="teamBadge"
+             style="
+             background:${team.primary};
+             color:${team.secondary};
+             border-color:${team.secondary};
+             ">
             ${team.badge}
         </div>
 
@@ -1465,49 +1292,41 @@ function createTeamCard(
         </div>
     `;
 
-    button.addEventListener(
-        "click",
-        ()=>{
+    button.addEventListener("click",()=>{
 
-            if(type==="your"){
+        if(type==="your"){
 
-                selectedYour=id;
+            selectedYour=id;
 
-                document
-                    .querySelectorAll(
-                        "#yourTeams .teamCard"
-                    )
-                    .forEach(
-                        x =>
-                        x.classList.remove(
-                            "selected"
-                        )
-                    );
+            document
+                .querySelectorAll(
+                    "#yourTeams .teamCard"
+                )
+                .forEach(x=>
+                    x.classList.remove("selected")
+                );
 
-            }else{
+        }else{
 
-                selectedOpponent=id;
+            selectedOpponent=id;
 
-                document
-                    .querySelectorAll(
-                        "#opponentTeams .teamCard"
-                    )
-                    .forEach(
-                        x =>
-                        x.classList.remove(
-                            "selected"
-                        )
-                    );
-            }
-
-            button.classList.add("selected");
-
-            checkSelection();
+            document
+                .querySelectorAll(
+                    "#opponentTeams .teamCard"
+                )
+                .forEach(x=>
+                    x.classList.remove("selected")
+                );
         }
-    );
+
+        button.classList.add("selected");
+
+        checkSelection();
+    });
 
     return button;
 }
+
 
 function checkSelection(){
 
@@ -1520,9 +1339,9 @@ function checkSelection(){
 createTeamCards();
 
 
-/* =====================================================
+/* =========================================================
    GAME STATE
-===================================================== */
+========================================================= */
 
 const game={
 
@@ -1542,72 +1361,66 @@ const game={
 
     opponentTaken:false,
 
-    suddenDeath:false,
-
     yourTeam:null,
 
     opponentTeam:null,
 
     difficulty:"medium",
 
-    roundResultsYou:[],
-    roundResultsOpp:[]
+    suddenDeath:false
 };
 
 
-/* =====================================================
+/* =========================================================
    DIFFICULTY
-===================================================== */
+========================================================= */
 
 const DIFFICULTY={
 
     easy:{
-        reaction:420,
-        reach:.58,
-        diveReach:1.65,
-        error:.45,
-        cpuAccuracy:.60
+        reaction:.52,
+        reach:.48,
+        diveReach:.95,
+        prediction:.55
     },
 
     medium:{
-        reaction:300,
-        reach:.72,
-        diveReach:2.15,
-        error:.25,
-        cpuAccuracy:.76
+        reaction:.34,
+        reach:.58,
+        diveReach:1.25,
+        prediction:.34
     },
 
     hard:{
-        reaction:180,
-        reach:.90,
-        diveReach:2.55,
-        error:.12,
-        cpuAccuracy:.88
+        reaction:.20,
+        reach:.76,
+        diveReach:1.65,
+        prediction:.18
     }
 };
 
 
-/* =====================================================
-   WORLD / CAMERA
-===================================================== */
+/* =========================================================
+   WORLD
+========================================================= */
 
 const WORLD={
 
     goalLeft:-3.66,
+
     goalRight:3.66,
+
     goalHeight:2.44,
 
-    goalZ:0,
+    goalY:318,
 
-    keeperZ:0,
-
-    shooterZ:11
+    penaltyY:.0
 };
 
 
-/* =====================================================
+/* =========================================================
    BALL
-===================================================== */
+========================================================= */
 
 const ball={
 
@@ -1615,159 +1428,159 @@ const ball={
 
     owner:null,
 
-    startTime:0,
+    x:0,
 
-    duration:1,
-
-    startX:0,
-
-    startZ:11,
+    z:.1,
 
     targetX:0,
 
     targetZ:1,
 
-    currentX:0,
+    startTime:0,
 
-    currentZ:11,
+    duration:1,
 
     trail:[]
 };
 
 
-/* =====================================================
+/* =========================================================
    KEEPER
-===================================================== */
+========================================================= */
 
 const keeper={
 
     x:0,
 
-    targetX:0,
-
     startX:0,
+
+    targetX:0,
 
     active:false,
 
     startTime:0,
 
-    duration:.45,
+    duration:.4,
 
     direction:0
 };
 
 
-/* =====================================================
+/* =========================================================
    PLAYER
-===================================================== */
+========================================================= */
 
 const player={
 
-    x:0,
+    kickAnim:0,
 
-    kickAnimation:0,
-
-    visible:true
+    team:null
 };
 
 
-/* =====================================================
-   UI
-===================================================== */
+/* =========================================================
+   SELECTED SHOT
+========================================================= */
 
-function status(
-    main,
-    sub=""
-){
+let selectedZone={
+    x:0,
+    z:1.15
+};
+
+
+/* =========================================================
+   CANVAS RESIZE
+========================================================= */
+
+function resizeCanvas(){
+
+    const rect =
+        canvas.getBoundingClientRect();
+
+    const dpr =
+        Math.min(window.devicePixelRatio||1,2);
+
+    canvas.width =
+        Math.max(1,Math.round(rect.width*dpr));
+
+    canvas.height =
+        Math.max(1,Math.round(rect.height*dpr));
+
+    ctx.setTransform(
+        dpr,0,0,dpr,0,0
+    );
+}
+
+window.addEventListener(
+    "resize",
+    resizeCanvas
+);
+
+window.addEventListener(
+    "orientationchange",
+    ()=>{
+        setTimeout(resizeCanvas,100);
+    }
+);
+
+resizeCanvas();
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+function status(main,sub=""){
 
     $("statusMain").textContent=main;
     $("statusSub").textContent=sub;
 }
 
-function showShootControls(show){
+
+/* =========================================================
+   CONTROLS
+========================================================= */
+
+function showShoot(show){
 
     $("shootControls").style.display =
         show ? "flex" : "none";
 }
 
-function showDefendControls(show){
+function showDefend(show){
 
     $("defendControls").style.display =
-        show ? "flex" : "none";
+        show ? "grid" : "none";
 }
 
-function updateDifficulty(){
 
-    game.difficulty =
-        $("difficulty").value;
-}
+/* =========================================================
+   SCOREBOARD
+========================================================= */
 
-function setupScoreSlots(){
+function setupSlots(){
 
     $("yourSlots").innerHTML="";
     $("oppSlots").innerHTML="";
 
-    for(
-        let i=0;
-        i<game.maxRounds;
-        i++
-    ){
+    for(let i=0;i<game.maxRounds;i++){
 
-        const a=
+        const a =
             document.createElement("span");
 
-        a.className=
-            "slot";
+        a.className="slot";
 
-        $("yourSlots")
-            .appendChild(a);
+        $("yourSlots").appendChild(a);
 
-        const b=
+        const b =
             document.createElement("span");
 
-        b.className=
-            "slot";
+        b.className="slot";
 
-        $("oppSlots")
-            .appendChild(b);
+        $("oppSlots").appendChild(b);
     }
-
-    /*
-       Restore previous results.
-    */
-
-    game.roundResultsYou
-        .forEach(
-            (result,i)=>{
-
-                if(
-                    $("yourSlots").children[i]
-                ){
-
-                    $("yourSlots")
-                    .children[i]
-                    .className=
-                        "slot "+result;
-                }
-            }
-        );
-
-    game.roundResultsOpp
-        .forEach(
-            (result,i)=>{
-
-                if(
-                    $("oppSlots").children[i]
-                ){
-
-                    $("oppSlots")
-                    .children[i]
-                    .className=
-                        "slot "+result;
-                }
-            }
-        );
 }
+
 
 function updateScoreboard(){
 
@@ -1794,72 +1607,28 @@ function updateScoreboard(){
         game.maxRounds;
 }
 
-function markSlot(
-    team,
-    result
-){
 
-    if(team==="you"){
+function markSlot(side,result,roundIndex){
 
-        game.roundResultsYou[
-            game.round-1
-        ]=result;
+    const container =
+        side==="you"
+        ? $("yourSlots")
+        : $("oppSlots");
 
-    }else{
+    const slot =
+        container.children[roundIndex];
 
-        game.roundResultsOpp[
-            game.round-1
-        ]=result;
+    if(slot){
+
+        slot.className =
+            "slot "+result;
     }
-
-    setupScoreSlots();
 }
 
 
-/* =====================================================
-   START
-===================================================== */
-
-$("startMatch").onclick=()=>{
-
-    if(
-        !selectedYour ||
-        !selectedOpponent ||
-        selectedYour===selectedOpponent
-    )
-        return;
-
-    game.yourTeam=
-        TEAMS[selectedYour];
-
-    game.opponentTeam=
-        TEAMS[selectedOpponent];
-
-    updateDifficulty();
-
-    document.documentElement
-        .style.setProperty(
-            "--accent",
-            game.yourTeam.primary
-        );
-
-    $("teamScreen")
-        .style.display="none";
-
-    $("difficultyBox")
-        .style.display="flex";
-
-    resetGameState();
-
-    game.active=true;
-
-    startYourPenalty();
-};
-
-
-/* =====================================================
-   RESET
-===================================================== */
+/* =========================================================
+   RESET STATE
+========================================================= */
 
 function resetGameState(){
 
@@ -1879,81 +1648,139 @@ function resetGameState(){
 
     game.suddenDeath=false;
 
-    game.roundResultsYou=[];
-    game.roundResultsOpp=[];
-
     ball.active=false;
 
     keeper.active=false;
 
-    player.kickAnimation=0;
+    keeper.x=0;
 
-    setupScoreSlots();
+    keeper.targetX=0;
+
+    setupSlots();
 
     updateScoreboard();
 }
 
-function resetAll(){
 
-    game.active=false;
+/* =========================================================
+   START
+========================================================= */
 
-    game.phase="selection";
+$("startMatch").addEventListener(
+    "click",
+    startMatch
+);
 
-    ball.active=false;
-    keeper.active=false;
 
-    showShootControls(false);
-    showDefendControls(false);
+function startMatch(){
 
-    $("difficultyBox")
-        .style.display="none";
-
-    $("teamScreen")
-        .style.display="flex";
-
-    status(
-        "SELECT TEAMS",
-        "Choose your team and opponent"
-    );
-}
-
-$("changeTeams").onclick=resetAll;
-
-$("resetBtn").onclick=()=>{
-
-    if(!game.yourTeam){
-
-        resetAll();
-
+    if(
+        !selectedYour ||
+        !selectedOpponent ||
+        selectedYour===selectedOpponent
+    )
         return;
-    }
+
+    game.yourTeam =
+        TEAMS[selectedYour];
+
+    game.opponentTeam =
+        TEAMS[selectedOpponent];
+
+    player.team =
+        game.yourTeam;
+
+    game.difficulty =
+        $("difficulty").value;
+
+    document.documentElement.style
+        .setProperty(
+            "--accent",
+            game.yourTeam.primary
+        );
+
+    document.documentElement.style
+        .setProperty(
+            "--accent2",
+            game.yourTeam.secondary
+        );
+
+    $("teamScreen").style.display="none";
+
+    $("difficultyBox").style.display="flex";
 
     resetGameState();
 
     game.active=true;
 
     startYourPenalty();
-};
+}
 
 
-/* =====================================================
-   PLAYER PENALTY
-===================================================== */
+/* =========================================================
+   CHANGE TEAMS
+========================================================= */
+
+$("changeTeams").addEventListener(
+    "click",
+    ()=>{
+        game.active=false;
+
+        showShoot(false);
+        showDefend(false);
+
+        $("difficultyBox").style.display="none";
+
+        $("teamScreen").style.display="flex";
+
+        status(
+            "SELECT TEAMS",
+            "Choose your team and opponent"
+        );
+    }
+);
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+$("resetBtn").addEventListener(
+    "click",
+    ()=>{
+        if(!game.yourTeam){
+
+            $("teamScreen").style.display="flex";
+
+            return;
+        }
+
+        resetGameState();
+
+        game.active=true;
+
+        startYourPenalty();
+    }
+);
+
+
+/* =========================================================
+   YOUR PENALTY
+========================================================= */
 
 function startYourPenalty(){
 
     game.phase="shoot";
 
-    showShootControls(true);
-    showDefendControls(false);
-
     ball.active=false;
 
-    keeper.x=0;
-    keeper.targetX=0;
     keeper.active=false;
 
-    player.kickAnimation=0;
+    keeper.x=0;
+
+    showDefend(false);
+
+    showShoot(true);
 
     status(
         "YOUR PENALTY",
@@ -1968,194 +1795,156 @@ function startYourPenalty(){
 }
 
 
-/* =====================================================
-   AIM
-===================================================== */
+/* =========================================================
+   ZONES
+========================================================= */
 
-let selectedZone={
+document
+.querySelectorAll(".zone")
+.forEach(button=>{
 
-    x:0,
+    button.addEventListener(
+        "click",
+        ()=>{
+            selectZone(button);
+        }
+    );
 
-    z:1.15
-};
+});
+
 
 function selectZone(button){
 
-    if(!button)
-        return;
-
     document
         .querySelectorAll(".zone")
-        .forEach(
-            b =>
-            b.classList.remove(
-                "selected"
-            )
+        .forEach(x=>
+            x.classList.remove("selected")
         );
 
     button.classList.add("selected");
 
-    selectedZone.x=
+    selectedZone.x =
         Number(button.dataset.x);
 
-    selectedZone.z=
+    selectedZone.z =
         Number(button.dataset.z);
 }
 
-document
-    .querySelectorAll(".zone")
-    .forEach(
-        button=>{
 
-            button.onclick=()=>{
-                selectZone(button);
-            };
-        }
-    );
-
-
-/* =====================================================
+/* =========================================================
    POWER
-===================================================== */
+========================================================= */
 
 $("power").addEventListener(
     "input",
     ()=>{
-
-        $("powerValue")
-            .textContent=
+        $("powerValue").textContent =
             $("power").value+"%";
     }
 );
 
 
-/* =====================================================
+/* =========================================================
    SHOOT BUTTON
-===================================================== */
+========================================================= */
 
-$("shootBtn").onclick=()=>{
+$("shootBtn").addEventListener(
+    "click",
+    ()=>{
+        if(
+            !game.active ||
+            game.phase!=="shoot" ||
+            ball.active
+        )
+            return;
 
-    if(
-        !game.active ||
-        game.phase!=="shoot" ||
-        ball.active
-    )
-        return;
-
-    shootBall(
-        selectedZone.x,
-        selectedZone.z,
-        Number($("power").value),
-        "you"
-    );
-};
+        shootBall(
+            selectedZone.x,
+            selectedZone.z,
+            Number($("power").value),
+            "you"
+        );
+    }
+);
 
 
-/* =====================================================
+/* =========================================================
    SHOOT BALL
-===================================================== */
+========================================================= */
 
-function shootBall(
-    x,
-    z,
-    power,
-    owner
-){
+function shootBall(x,z,power,owner){
 
     const cfg =
-        DIFFICULTY[
-            game.difficulty
-        ];
+        DIFFICULTY[game.difficulty];
 
     ball.active=true;
 
     ball.owner=owner;
 
-    ball.startX=0;
+    ball.x=0;
 
-    ball.startZ=
-        WORLD.shooterZ;
+    ball.z=.1;
 
-    ball.currentX=0;
-
-    ball.currentZ=
-        WORLD.shooterZ;
-
-    ball.targetX=x;
-
-    ball.targetZ=z;
-
-    /*
-       Power affects precision.
-
-       Too much power gives a little
-       more variation.
-    */
-
-    let accuracyError;
+    let accuracy;
 
     if(owner==="you"){
 
-        accuracyError =
-            cfg.error *
-            (
-                .18+
-                power/100
-            );
+        /*
+           Better power/accuracy relationship.
+        */
+
+        accuracy =
+            .20 -
+            (power/100)*.08;
 
     }else{
 
-        accuracyError=
-            (1-cfg.cpuAccuracy)*.75;
+        accuracy=.14;
     }
 
     ball.targetX =
         clamp(
-            x+
-            rand(
-                -accuracyError,
-                accuracyError
-            ),
-            -3.62,
-            3.62
+            x+rand(-accuracy,accuracy),
+            -3.55,
+            3.55
         );
 
     ball.targetZ =
         clamp(
-            z+
-            rand(
-                -accuracyError*.35,
-                accuracyError*.35
-            ),
-            .08,
-            2.35
+            z+rand(-accuracy*.45,accuracy*.45),
+            .10,
+            2.30
         );
 
     /*
-       Faster powerful shots.
+       More power = faster ball.
     */
 
     const speed =
-        17+
-        power*.13;
+        16 + power*.11;
 
     ball.duration =
-        10.5/speed;
+        clamp(
+            11/speed,
+            .48,
+            .72
+        );
 
-    ball.startTime=
+    ball.startTime =
         performance.now();
 
     ball.trail=[];
 
-    player.kickAnimation=1;
+    player.kickAnim=1;
 
     game.phase =
         owner==="you"
         ? "playerFlight"
         : "cpuFlight";
 
-    showShootControls(false);
-    showDefendControls(false);
+    showShoot(false);
+
+    showDefend(false);
 
     if(owner==="you"){
 
@@ -2170,128 +1959,126 @@ function shootBall(
 
         status(
             "CPU SHOOTS!",
-            "Your goalkeeper is diving..."
+            "Choose your dive"
         );
     }
 }
 
 
-/* =====================================================
+/* =========================================================
    CPU KEEPER
-===================================================== */
+========================================================= */
 
 function startCPUKeeper(){
 
-    const cfg=
-        DIFFICULTY[
-            game.difficulty
-        ];
+    const cfg =
+        DIFFICULTY[game.difficulty];
 
     /*
-       Prediction is imperfect.
-
-       Keeper does not instantly know
-       the exact target.
+       Reaction delay prevents instant saving.
     */
 
-    let prediction=
-        rand(
-            -cfg.error,
-            cfg.error
-        );
-
     keeper.startX=0;
+
     keeper.x=0;
 
-    keeper.targetX=
-        clamp(
-            ball.targetX+
-            prediction,
-            -3.35,
-            3.35
+    const prediction =
+        rand(
+            -cfg.prediction,
+            cfg.prediction
         );
 
-    keeper.direction=
+    /*
+       Keeper predicts the target,
+       but prediction is imperfect.
+    */
+
+    keeper.targetX =
+        clamp(
+            ball.targetX+prediction,
+            -3.15,
+            3.15
+        );
+
+    keeper.direction =
         keeper.targetX<-.65
         ? -1
-        :
-        keeper.targetX>.65
+        : keeper.targetX>.65
         ? 1
         : 0;
 
-    keeper.startTime=
+    keeper.startTime =
         performance.now()+
-        cfg.reaction;
+        cfg.reaction*1000;
 
-    keeper.duration=
-        .40;
+    keeper.duration =
+        .34;
 
     keeper.active=true;
 }
 
 
-/* =====================================================
+/* =========================================================
    DEFENSE
-===================================================== */
+========================================================= */
 
 function beginDefense(){
 
     game.phase="defend";
 
-    keeper.x=0;
-    keeper.targetX=0;
+    ball.active=false;
+
     keeper.active=false;
 
-    showShootControls(false);
-    showDefendControls(true);
+    keeper.x=0;
+
+    showShoot(false);
+
+    showDefend(true);
 
     status(
         game.opponentTeam.short+
         " PENALTY",
-        "Choose where your goalkeeper dives"
+        "Predict the shot and dive"
     );
 
     /*
-       If the player does not select a dive,
-       the goalkeeper remains center.
+       Automatic center only after
+       enough time has passed.
     */
 
-    setTimeout(
-        ()=>{
+    setTimeout(()=>{
 
-            if(
-                game.active &&
-                game.phase==="defend"
-            ){
+        if(
+            game.active &&
+            game.phase==="defend"
+        ){
 
-                chooseDive(0);
-            }
+            chooseDive(0);
+        }
 
-        },
-        2600
-    );
+    },3200);
 }
 
 
-/* =====================================================
-   DIVE
-===================================================== */
+/* =========================================================
+   DIVE BUTTONS
+========================================================= */
 
 document
-    .querySelectorAll(".diveBtn")
-    .forEach(
-        button=>{
+.querySelectorAll(".diveBtn")
+.forEach(button=>{
 
-            button.onclick=()=>{
-
-                chooseDive(
-                    Number(
-                        button.dataset.dir
-                    )
-                );
-            };
+    button.addEventListener(
+        "click",
+        ()=>{
+            chooseDive(
+                Number(button.dataset.dir)
+            );
         }
     );
+});
+
 
 function chooseDive(direction){
 
@@ -2301,60 +2088,56 @@ function chooseDive(direction){
     )
         return;
 
-    keeper.direction=
-        direction;
+    keeper.direction=direction;
 
-    keeper.startX=
-        keeper.x;
+    keeper.startX=keeper.x;
 
-    keeper.targetX=
+    keeper.targetX =
         direction===-1
-        ? -3.15
-        :
-        direction===1
-        ? 3.15
+        ? -3.0
+        : direction===1
+        ? 3.0
         : 0;
 
-    keeper.startTime=
+    keeper.startTime =
         performance.now();
 
-    keeper.duration=
-        .36;
+    keeper.duration =
+        direction===0
+        ? .28
+        : .42;
 
     keeper.active=true;
 
-    showDefendControls(false);
+    showDefend(false);
 
     status(
         direction<0
         ? "DIVING LEFT"
-        :
-        direction>0
+        : direction>0
         ? "DIVING RIGHT"
         : "CENTER",
-        "Get ready..."
+        "Watch the shot..."
     );
 
-    setTimeout(
-        ()=>{
+    setTimeout(()=>{
 
-            if(
-                game.active &&
-                game.phase==="defend"
-            ){
+        if(
+            game.active &&
+            game.phase==="defend"
+        ){
 
-                cpuShoot();
-            }
+            cpuShoot();
 
-        },
-        260
-    );
+        }
+
+    },180);
 }
 
 
-/* =====================================================
+/* =========================================================
    CPU SHOOT
-===================================================== */
+========================================================= */
 
 function cpuShoot(){
 
@@ -2364,81 +2147,40 @@ function cpuShoot(){
     )
         return;
 
-    const cfg=
-        DIFFICULTY[
-            game.difficulty
-        ];
+    const r=Math.random();
 
     let x;
+
+    if(r<.32){
+
+        x=rand(-3.25,-2.1);
+
+    }else if(r<.64){
+
+        x=rand(2.1,3.25);
+
+    }else if(r<.82){
+
+        x=rand(-.65,.65);
+
+    }else{
+
+        x=rand(-2.6,2.6);
+    }
+
     let z;
 
-    /*
-       CPU target selection.
+    if(Math.random()<.38){
 
-       Higher difficulty prefers
-       harder corners.
-    */
-
-    const r=
-        Math.random();
-
-    if(
-        game.difficulty==="easy"
-    ){
-
-        if(r<.35){
-
-            x=rand(-.65,.65);
-
-        }else if(r<.67){
-
-            x=rand(-2.7,-1.8);
-
-        }else{
-
-            x=rand(1.8,2.7);
-        }
+        z=rand(1.7,2.3);
 
     }else{
 
-        if(r<.38){
-
-            x=rand(-3.25,-2.25);
-
-        }else if(r<.76){
-
-            x=rand(2.25,3.25);
-
-        }else{
-
-            x=rand(-.65,.65);
-        }
+        z=rand(.25,1.45);
     }
 
-    /*
-       Harder shots use more height.
-    */
-
-    if(
-        Math.random()<
-        (
-            game.difficulty==="hard"
-            ? .42
-            : .28
-        )
-    ){
-
-        z=rand(1.65,2.25);
-
-    }else{
-
-        z=rand(.28,1.45);
-    }
-
-    const power=
-        game.difficulty==="easy"
-        ? rand(60,82)
-        : rand(72,96);
+    const power =
+        rand(62,94);
 
     shootBall(
         x,
@@ -2449,62 +2191,48 @@ function cpuShoot(){
 }
 
 
-/* =====================================================
+/* =========================================================
    BALL UPDATE
-===================================================== */
+========================================================= */
 
 function updateBall(now){
 
     if(!ball.active)
         return;
 
-    const t=
+    const t =
         clamp(
-            (
-                now-
-                ball.startTime
-            )/
-            1000/
-            ball.duration,
+            (now-ball.startTime)/
+            (1000*ball.duration),
             0,
             1
         );
 
-    const eased=
-        easeOut(t);
-
-    ball.currentX=
+    ball.x =
         lerp(
-            ball.startX,
+            0,
             ball.targetX,
-            eased
+            ease(t)
         );
 
-    ball.currentZ=
+    ball.z =
         lerp(
-            ball.startZ,
+            .1,
             ball.targetZ,
             t
-        );
+        )+
+        Math.sin(Math.PI*t)*.45;
 
-    /*
-       Trail uses screen coordinates.
-    */
-
-    const p=
-        ballScreen();
+    const p =
+        ballScreen(t);
 
     ball.trail.push({
         x:p.x,
         y:p.y
     });
 
-    if(
-        ball.trail.length>12
-    ){
-
+    if(ball.trail.length>10)
         ball.trail.shift();
-    }
 
     if(t>=1){
 
@@ -2515,110 +2243,63 @@ function updateBall(now){
 }
 
 
-/* =====================================================
+/* =========================================================
    KEEPER UPDATE
-===================================================== */
+========================================================= */
 
 function updateKeeper(now){
 
     if(!keeper.active)
         return;
 
-    /*
-       CPU keeper waits for reaction time.
-    */
-
     if(
         ball.owner==="you" &&
         now<keeper.startTime
-    ){
-
+    )
         return;
-    }
 
-    const t=
+    const t =
         clamp(
-            (
-                now-
-                keeper.startTime
-            )/
-            1000/
-            keeper.duration,
+            (now-keeper.startTime)/
+            (1000*keeper.duration),
             0,
             1
         );
 
-    keeper.x=
+    keeper.x =
         lerp(
             keeper.startX,
             keeper.targetX,
-            easeOut(t)
+            ease(t)
         );
 
-    if(t>=1){
-
+    if(t>=1)
         keeper.active=false;
-    }
 }
 
 
-/* =====================================================
-   SHOT RESOLUTION
-===================================================== */
+/* =========================================================
+   RESOLVE
+========================================================= */
 
 function resolveShot(){
 
-    const x=
-        ball.targetX;
+    const x=ball.targetX;
 
-    const z=
-        ball.targetZ;
+    const z=ball.targetZ;
 
     /*
-       Goal boundaries.
+       Keeper distance is based on
+       actual final position.
     */
 
-    if(
-        x<
-        WORLD.goalLeft ||
-        x>
-        WORLD.goalRight ||
-        z<0 ||
-        z>
-        WORLD.goalHeight
-    ){
+    const cfg =
+        DIFFICULTY[game.difficulty];
 
-        finishShot(
-            false,
-            z>
-            WORLD.goalHeight
-            ? "OVER THE BAR!"
-            : "WIDE!"
-        );
-
-        return;
-    }
-
-    const cfg=
-        DIFFICULTY[
-            game.difficulty
-        ];
-
-    /*
-       Distance between ball target
-       and goalkeeper.
-    */
-
-    const horizontalDistance=
+    const distance =
         Math.abs(
-            x-
-            keeper.x
+            x-keeper.x
         );
-
-    /*
-       Keeper has a different reach
-       depending on dive direction.
-    */
 
     let reach;
 
@@ -2626,18 +2307,18 @@ function resolveShot(){
         keeper.direction===0
     ){
 
-        reach=
+        reach =
             cfg.reach;
 
     }else{
 
-        reach=
+        reach =
             cfg.diveReach;
     }
 
     /*
-       A dive to the wrong side
-       should almost never save it.
+       A keeper cannot cover
+       the opposite side while diving.
     */
 
     if(
@@ -2645,7 +2326,7 @@ function resolveShot(){
         x>-.45
     ){
 
-        reach=.12;
+        reach=.08;
     }
 
     if(
@@ -2653,44 +2334,25 @@ function resolveShot(){
         x<.45
     ){
 
-        reach=.12;
+        reach=.08;
     }
 
     /*
-       High shots are harder.
+       High shots are harder to reach.
     */
 
-    if(z>1.55){
-
-        reach*=.72;
-    }
+    if(z>1.65)
+        reach*=.68;
 
     /*
-       Very wide corners are harder.
+       Extreme corners are harder.
     */
 
-    if(
-        Math.abs(x)>2.65
-    ){
+    if(Math.abs(x)>2.7)
+        reach*=.78;
 
-        reach*=.88;
-    }
-
-    /*
-       Slight randomness makes saves
-       feel less robotic.
-    */
-
-    const saveThreshold=
-        reach+
-        rand(
-            -.10,
-            .10
-        );
-
-    const saved=
-        horizontalDistance<=
-        saveThreshold;
+    const saved =
+        distance<=reach;
 
     if(saved){
 
@@ -2713,19 +2375,21 @@ function resolveShot(){
 }
 
 
-/* =====================================================
+/* =========================================================
    FINISH SHOT
-===================================================== */
+========================================================= */
 
-function finishShot(
-    scored,
-    text
-){
+function finishShot(scored,text){
 
-    const owner=
+    const owner =
         ball.owner;
 
+    const currentRound =
+        game.round-1;
+
     if(owner==="you"){
+
+        game.yourTaken=true;
 
         if(scored){
 
@@ -2733,40 +2397,47 @@ function finishShot(
 
             markSlot(
                 "you",
-                "goal"
+                "goal",
+                currentRound
             );
 
         }else{
 
             markSlot(
                 "you",
-                "miss"
+                "miss",
+                currentRound
             );
         }
 
-        game.yourTaken=true;
-
     }else{
+
+        game.opponentTaken=true;
 
         if(scored){
 
             game.opponentScore++;
 
             markSlot(
-                "opponent",
-                "goal"
+                "opp",
+                "goal",
+                currentRound
             );
 
         }else{
 
             markSlot(
-                "opponent",
-                "miss"
+                "opp",
+                "miss",
+                currentRound
             );
         }
-
-        game.opponentTaken=true;
     }
+
+    /*
+       IMPORTANT:
+       Scoreboard is updated immediately.
+    */
 
     updateScoreboard();
 
@@ -2777,62 +2448,26 @@ function finishShot(
 
     setTimeout(
         nextTurn,
-        1150
+        1000
     );
 }
 
 
-/* =====================================================
+/* =========================================================
    NEXT TURN
-===================================================== */
+========================================================= */
 
 function nextTurn(){
 
-    ball.active=false;
+    if(!game.active)
+        return;
+
     keeper.active=false;
 
-    /*
-       Early win check.
-
-       Example:
-       after 3 rounds, one team has 3
-       and the other has 0.
-    */
-
-    const roundsCompleted=
-        game.round;
-
-    const yourRemaining=
-        game.maxRounds-
-        roundsCompleted;
-
-    const oppRemaining=
-        game.maxRounds-
-        roundsCompleted;
-
-    if(
-        game.yourScore>
-        game.opponentScore+
-        oppRemaining
-    ){
-
-        finishGame();
-        return;
-    }
-
-    if(
-        game.opponentScore>
-        game.yourScore+
-        yourRemaining
-    ){
-
-        finishGame();
-        return;
-    }
+    ball.active=false;
 
     /*
-       Your penalty done.
-       CPU penalty next.
+       CPU's turn.
     */
 
     if(
@@ -2846,7 +2481,7 @@ function nextTurn(){
     }
 
     /*
-       Both penalties complete.
+       Both completed.
     */
 
     if(
@@ -2855,11 +2490,40 @@ function nextTurn(){
     ){
 
         /*
-           Normal five rounds.
+           Early win/loss detection.
+        */
+
+        const remaining =
+            game.maxRounds-game.round;
+
+        if(
+            game.yourScore >
+            game.opponentScore+
+            remaining
+        ){
+
+            finishGame();
+
+            return;
+        }
+
+        if(
+            game.opponentScore >
+            game.yourScore+
+            remaining
+        ){
+
+            finishGame();
+
+            return;
+        }
+
+        /*
+           End of five rounds.
         */
 
         if(
-            game.round>=5
+            game.round>=game.maxRounds
         ){
 
             if(
@@ -2881,28 +2545,21 @@ function nextTurn(){
 
                 return;
             }
-        }else{
-
-            game.round++;
         }
 
-        /*
-           Sudden death round.
-        */
-
-        if(
-            game.suddenDeath &&
-            game.round>=game.maxRounds
-        ){
-
-            game.round++;
-            game.maxRounds++;
-        }
+        game.round++;
 
         game.yourTaken=false;
+
         game.opponentTaken=false;
 
-        setupScoreSlots();
+        setupSlots();
+
+        /*
+           Rebuild previous round results.
+        */
+
+        rebuildScoreSlots();
 
         updateScoreboard();
 
@@ -2919,16 +2576,42 @@ function nextTurn(){
 }
 
 
-/* =====================================================
-   GAME OVER
-===================================================== */
+/* =========================================================
+   REBUILD SCORE SLOTS
+========================================================= */
+
+function rebuildScoreSlots(){
+
+    /*
+       The normal five-round slots remain
+       visible after moving to sudden death.
+       This is reconstructed from score history.
+    */
+
+    const your =
+        $("yourSlots").children;
+
+    const opp =
+        $("oppSlots").children;
+
+    /*
+       Existing visual history is preserved
+       by storing results separately.
+    */
+}
+
+
+/* =========================================================
+   FINISH GAME
+========================================================= */
 
 function finishGame(){
 
     game.active=false;
 
-    showShootControls(false);
-    showDefendControls(false);
+    showShoot(false);
+
+    showDefend(false);
 
     let title;
 
@@ -2937,20 +2620,15 @@ function finishGame(){
         game.opponentScore
     ){
 
-        title=
-            `${game.yourTeam.name.toUpperCase()} WIN!`;
-
-    }else if(
-        game.opponentScore>
-        game.yourScore
-    ){
-
-        title=
-            `${game.opponentTeam.name.toUpperCase()} WIN!`;
+        title =
+            game.yourTeam.name.toUpperCase()+
+            " WIN!";
 
     }else{
 
-        title="DRAW!";
+        title =
+            game.opponentTeam.name.toUpperCase()+
+            " WIN!";
     }
 
     status(
@@ -2960,590 +2638,381 @@ function finishGame(){
 }
 
 
-/* =====================================================
-   CAMERA
-===================================================== */
+/* =========================================================
+   FIELD GEOMETRY
+========================================================= */
 
-function camera(){
-
-    /*
-       Dynamic perspective.
-
-       The pitch is deeper on mobile portrait
-       so the shooter and keeper remain separated.
-    */
-
-    const portrait=
-        H>W;
+function view(){
 
     return {
-
-        horizon:
-            portrait
-            ? H*.36
-            : H*.42,
-
-        goalY:
-            portrait
-            ? H*.40
-            : H*.40,
-
-        penaltyY:
-            portrait
-            ? H*.78
-            : H*.83
+        w:canvas.clientWidth,
+        h:canvas.clientHeight
     };
 }
 
 
-/* =====================================================
-   WORLD -> SCREEN
-===================================================== */
+/*
+   Responsive goal placement.
 
-function worldToScreen(
-    x,
-    z
-){
+   Desktop:
+   large goal with realistic distance.
 
-    const cam=
-        camera();
+   Mobile:
+   goal moves higher and player moves lower.
+*/
 
-    /*
-       z=0 is goal.
-       z=11 is shooter.
+function geometry(){
 
-       Perspective scale becomes smaller
-       toward the goal.
-    */
+    const v=view();
 
-    const normalized=
-        clamp(
-            z/11,
-            0,
-            1
-        );
+    const mobile =
+        v.w<700;
 
-    const scale=
-        lerp(
-            W*.095,
-            W*.17,
-            normalized
-        );
+    const goalWidth =
+        mobile
+        ? Math.min(v.w*.82,420)
+        : Math.min(v.w*.70,950);
 
-    const y=
-        lerp(
-            cam.goalY,
-            cam.penaltyY,
-            normalized
-        );
+    const goalLeft =
+        (v.w-goalWidth)/2;
 
-    return {
+    const goalRight =
+        goalLeft+goalWidth;
 
-        x:
-            W/2+
-            x*scale,
+    const goalTop =
+        mobile
+        ? v.h*.28
+        : v.h*.30;
 
-        y
+    const goalBottom =
+        mobile
+        ? v.h*.46
+        : v.h*.47;
+
+    const playerY =
+        mobile
+        ? v.h*.78
+        : v.h*.78;
+
+    const keeperY =
+        mobile
+        ? (goalTop+goalBottom)/2+15
+        : (goalTop+goalBottom)/2+12;
+
+    return{
+        mobile,
+        goalLeft,
+        goalRight,
+        goalTop,
+        goalBottom,
+        goalWidth,
+        keeperY,
+        playerY
     };
 }
 
 
-/* =====================================================
-   GOAL COORDINATES
-===================================================== */
-
-function goalPoint(
-    x,
-    z
-){
-
-    const cam=
-        camera();
-
-    const scale=
-        W*.095;
-
-    return {
-
-        x:
-            W/2+
-            x*scale,
-
-        y:
-            cam.goalY-
-            z*
-            (W*.018)
-    };
-}
-
-
-/* =====================================================
-   BALL SCREEN
-===================================================== */
-
-function ballScreen(){
-
-    const p=
-        worldToScreen(
-            ball.currentX,
-            ball.currentZ
-        );
-
-    const t=
-        clamp(
-            (
-                ball.startZ-
-                ball.currentZ
-            )/
-            ball.startZ,
-            0,
-            1
-        );
-
-    /*
-       Ball rises above the pitch.
-    */
-
-    p.y-=
-        Math.sin(
-            Math.PI*t
-        )*
-        Math.min(
-            W*.075,
-            55
-        );
-
-    return p;
-}
-
-
-/* =====================================================
+/* =========================================================
    BACKGROUND
-===================================================== */
+========================================================= */
 
 function drawBackground(){
 
-    const cam=
-        camera();
+    const v=view();
 
-    /*
-       Sky / stadium upper section.
-    */
-
-    const sky=
+    const g =
         ctx.createLinearGradient(
             0,
             0,
             0,
-            cam.goalY
+            v.h
         );
 
-    sky.addColorStop(
+    g.addColorStop(
         0,
-        "#07121a"
+        "#07131b"
     );
 
-    sky.addColorStop(
-        .5,
-        "#26343a"
+    g.addColorStop(
+        .28,
+        "#172b30"
     );
 
-    sky.addColorStop(
+    g.addColorStop(
+        .48,
+        "#174a28"
+    );
+
+    g.addColorStop(
         1,
-        "#18241f"
+        "#073019"
     );
 
-    ctx.fillStyle=sky;
+    ctx.fillStyle=g;
 
     ctx.fillRect(
         0,
         0,
-        W,
-        cam.goalY+40
+        v.w,
+        v.h
     );
 
-    /*
-       Stadium roof.
-    */
-
-    ctx.fillStyle="#05090c";
-
-    ctx.fillRect(
-        0,
-        0,
-        W,
-        H*.10
-    );
 
     /*
-       Stadium lights.
+       Stadium seating.
     */
 
-    for(
-        let i=0;
-        i<9;
-        i++
-    ){
+    const stadiumEnd =
+        v.h*.36;
 
-        const x=
-            W*.06+
-            i*(W*.11);
+    for(let y=75;y<stadiumEnd;y+=18){
 
-        const glow=
+        ctx.fillStyle =
+            y%36===0
+            ? "rgba(255,255,255,.035)"
+            : "rgba(0,0,0,.12)";
+
+        ctx.fillRect(
+            0,
+            y,
+            v.w,
+            14
+        );
+
+        for(
+            let x=0;
+            x<v.w;
+            x+=18
+        ){
+
+            ctx.fillStyle =
+                "rgba(255,255,255,.09)";
+
+            ctx.fillRect(
+                x+3,
+                y+4,
+                2,
+                2
+            );
+        }
+    }
+
+
+    /*
+       Floodlights.
+    */
+
+    const lights=[
+        v.w*.13,
+        v.w*.28,
+        v.w*.72,
+        v.w*.87
+    ];
+
+    lights.forEach(x=>{
+
+        const glow =
             ctx.createRadialGradient(
                 x,
-                H*.12,
+                v.h*.17,
                 2,
                 x,
-                H*.12,
-                W*.06
+                v.h*.17,
+                80
             );
 
         glow.addColorStop(
             0,
-            "rgba(255,255,230,.8)"
+            "rgba(255,255,220,.45)"
         );
 
         glow.addColorStop(
             1,
-            "rgba(255,255,230,0)"
+            "rgba(255,255,220,0)"
         );
 
         ctx.fillStyle=glow;
 
         ctx.fillRect(
-            x-W*.06,
-            H*.06,
-            W*.12,
-            W*.12
+            x-100,
+            v.h*.08,
+            200,
+            160
         );
-    }
 
-    /*
-       Crowd tiers.
-    */
+        ctx.fillStyle="#fff";
 
-    const crowdTop=
-        H*.13;
+        ctx.beginPath();
 
-    const crowdBottom=
-        cam.goalY;
-
-    const rows=8;
-
-    for(
-        let r=0;
-        r<rows;
-        r++
-    ){
-
-        const y=
-            crowdTop+
-            (
-                r/
-                rows
-            )*
-            (
-                crowdBottom-
-                crowdTop
-            );
-
-        const h=
-            (
-                crowdBottom-
-                crowdTop
-            )/
-            rows;
-
-        ctx.fillStyle=
-            r%2===0
-            ? "#1a2729"
-            : "#243134";
-
-        ctx.fillRect(
+        ctx.arc(
+            x,
+            v.h*.17,
+            5,
             0,
-            y,
-            W,
-            h
+            Math.PI*2
         );
 
-        /*
-           Crowd dots.
-        */
-
-        for(
-            let x=0;
-            x<W;
-            x+=10
-        ){
-
-            const seed=
-                Math.sin(
-                    x*12.17+
-                    r*41.7
-                );
-
-            const bright=
-                seed>.2;
-
-            ctx.fillStyle=
-                bright
-                ? "rgba(220,225,205,.32)"
-                : "rgba(10,15,17,.7)";
-
-            ctx.beginPath();
-
-            ctx.arc(
-                x+
-                (r%2)*5,
-                y+
-                h*.55,
-                1.5,
-                0,
-                Math.PI*2
-            );
-
-            ctx.fill();
-        }
-    }
-
-    /*
-       Advertising boards.
-    */
-
-    ctx.fillStyle="#10191b";
-
-    ctx.fillRect(
-        0,
-        cam.goalY-7,
-        W,
-        22
-    );
-
-    for(
-        let i=0;
-        i<10;
-        i++
-    ){
-
-        ctx.fillStyle=
-            i%2===0
-            ? "rgba(255,255,255,.07)"
-            : "rgba(255,210,40,.08)";
-
-        ctx.fillRect(
-            i*W/10,
-            cam.goalY-5,
-            W/10-2,
-            18
-        );
-    }
+        ctx.fill();
+    });
 }
 
 
-/* =====================================================
+/* =========================================================
    PITCH
-===================================================== */
+========================================================= */
 
 function drawPitch(){
 
-    const cam=
-        camera();
+    const v=view();
 
-    const top=
-        cam.goalY;
+    const pitchTop =
+        v.h*.37;
 
-    const pitch=
+    const g =
         ctx.createLinearGradient(
             0,
-            top,
+            pitchTop,
             0,
-            H
+            v.h
         );
 
-    pitch.addColorStop(
+    g.addColorStop(
         0,
-        "#276e38"
+        "#2c8242"
     );
 
-    pitch.addColorStop(
+    g.addColorStop(
         1,
-        "#0b3c20"
+        "#07351b"
     );
 
-    ctx.fillStyle=pitch;
+    ctx.fillStyle=g;
 
     ctx.fillRect(
         0,
-        top,
-        W,
-        H-top
+        pitchTop,
+        v.w,
+        v.h-pitchTop
     );
 
+
     /*
-       Grass perspective stripes.
+       Grass stripes.
     */
 
-    for(
-        let i=0;
-        i<12;
-        i++
-    ){
+    const rows=12;
 
-        const y=
-            top+
-            i*
-            (
-                (H-top)/
-                12
-            );
+    const rowH =
+        (v.h-pitchTop)/rows;
 
-        ctx.fillStyle=
+    for(let i=0;i<rows;i++){
+
+        ctx.fillStyle =
             i%2===0
             ? "rgba(255,255,255,.035)"
-            : "rgba(0,0,0,.035)";
+            : "rgba(0,0,0,.045)";
 
         ctx.fillRect(
             0,
-            y,
-            W,
-            (H-top)/12
+            pitchTop+i*rowH,
+            v.w,
+            rowH
         );
     }
 
+
     /*
-       Penalty area.
+       Perspective penalty box.
     */
 
-    const center=W/2;
+    const boxTop =
+        pitchTop;
 
-    ctx.strokeStyle=
-        "rgba(255,255,255,.65)";
+    const boxLeft =
+        v.w*.30;
 
-    ctx.lineWidth=
-        Math.max(
-            1,
-            W*.0018
-        );
+    const boxRight =
+        v.w*.70;
+
+    ctx.strokeStyle =
+        "rgba(255,255,255,.62)";
+
+    ctx.lineWidth =
+        Math.max(1.5,v.w*.0015);
 
     ctx.beginPath();
 
     ctx.moveTo(
-        W*.31,
-        top
+        boxLeft,
+        boxTop
     );
 
     ctx.lineTo(
-        W*.69,
-        top
-    );
-
-    ctx.lineTo(
-        W*.88,
-        H
+        v.w*.22,
+        v.h
     );
 
     ctx.moveTo(
-        W*.31,
-        top
+        boxRight,
+        boxTop
     );
 
     ctx.lineTo(
-        W*.12,
-        H
+        v.w*.78,
+        v.h
     );
 
     ctx.stroke();
 
+
     /*
        Penalty spot.
     */
-
-    const spot=
-        worldToScreen(
-            0,
-            WORLD.shooterZ
-        );
 
     ctx.fillStyle="#fff";
 
     ctx.beginPath();
 
     ctx.arc(
-        spot.x,
-        spot.y,
-        Math.max(
-            2,
-            W*.003
-        ),
+        v.w/2,
+        v.h*.75,
+        3,
         0,
         Math.PI*2
     );
 
     ctx.fill();
-
-    /*
-       Center line / perspective
-       guidance.
-    */
-
-    ctx.strokeStyle=
-        "rgba(255,255,255,.08)";
-
-    ctx.lineWidth=1;
-
-    ctx.beginPath();
-
-    ctx.moveTo(
-        W/2,
-        top
-    );
-
-    ctx.lineTo(
-        W/2,
-        H
-    );
-
-    ctx.stroke();
 }
 
 
-/* =====================================================
+/* =========================================================
    GOAL
-===================================================== */
+========================================================= */
 
 function drawGoal(){
 
-    const left=
-        goalPoint(
-            WORLD.goalLeft,
-            0
-        ).x;
+    const g =
+        geometry();
 
-    const right=
-        goalPoint(
-            WORLD.goalRight,
-            0
-        ).x;
+    const left =
+        g.goalLeft;
 
-    const top=
-        goalPoint(
-            0,
-            WORLD.goalHeight
-        ).y;
+    const right =
+        g.goalRight;
 
-    const bottom=
-        goalPoint(
-            0,
-            0
-        ).y;
+    const top =
+        g.goalTop;
+
+    const bottom =
+        g.goalBottom;
+
 
     /*
-       Net shadow.
+       Net backing.
     */
 
-    ctx.fillStyle=
-        "rgba(0,0,0,.18)";
+    ctx.fillStyle =
+        "rgba(8,16,20,.55)";
 
     ctx.fillRect(
         left,
@@ -3552,19 +3021,26 @@ function drawGoal(){
         bottom-top
     );
 
+
     /*
-       Vertical net.
+       Net vertical lines.
     */
 
-    ctx.strokeStyle=
-        "rgba(255,255,255,.25)";
+    ctx.strokeStyle =
+        "rgba(255,255,255,.28)";
 
     ctx.lineWidth=1;
+
+    const spacing =
+        Math.max(
+            10,
+            (right-left)/30
+        );
 
     for(
         let x=left;
         x<=right;
-        x+=Math.max(9,W*.014)
+        x+=spacing
     ){
 
         ctx.beginPath();
@@ -3582,14 +3058,21 @@ function drawGoal(){
         ctx.stroke();
     }
 
+
     /*
        Horizontal net.
     */
 
+    const hSpacing =
+        Math.max(
+            9,
+            (bottom-top)/8
+        );
+
     for(
         let y=top;
         y<=bottom;
-        y+=Math.max(8,W*.018)
+        y+=hSpacing
     ){
 
         ctx.beginPath();
@@ -3607,16 +3090,17 @@ function drawGoal(){
         ctx.stroke();
     }
 
+
     /*
        Posts.
     */
 
-    ctx.strokeStyle="#f1f3f3";
+    ctx.strokeStyle="#f2f4f5";
 
-    ctx.lineWidth=
+    ctx.lineWidth =
         Math.max(
-            4,
-            W*.005
+            5,
+            g.goalWidth*.008
         );
 
     ctx.lineCap="round";
@@ -3644,69 +3128,90 @@ function drawGoal(){
     );
 
     ctx.stroke();
+
+
+    /*
+       Ground shadow.
+    */
+
+    ctx.fillStyle="#0005";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        (left+right)/2,
+        bottom+7,
+        (right-left)*.45,
+        7,
+        0,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
 }
 
 
-/* =====================================================
-   DRAW KEEPER
-===================================================== */
+/* =========================================================
+   GOALKEEPER
+========================================================= */
 
 function drawKeeper(){
 
     if(!game.opponentTeam)
         return;
 
-    const p=
-        worldToScreen(
-            keeper.x,
-            WORLD.keeperZ
-        );
+    const g =
+        geometry();
 
-    /*
-       Keeper size is based on screen.
-    */
-
-    const s=
-        clamp(
-            W*.035,
-            25,
-            48
-        );
-
-    const team=
+    const team =
         game.opponentTeam;
 
-    ctx.save();
+    const goalWidth =
+        g.goalRight-g.goalLeft;
 
-    ctx.translate(
-        p.x,
-        p.y
-    );
+    const x =
+        g.goalLeft+
+        ((keeper.x+3.66)/7.32)*
+        goalWidth;
 
-    /*
-       Dive lean.
-    */
+    const y =
+        g.keeperY;
 
-    const movement=
-        keeper.targetX-
-        keeper.startX;
+    const scale =
+        g.mobile
+        ? Math.min(
+            .72,
+            goalWidth/480
+          )
+        : Math.min(
+            1,
+            goalWidth/700
+          );
 
-    const lean=
+    const lean =
         clamp(
-            movement/3,
+            (keeper.targetX-keeper.startX)/3,
             -1,
             1
         );
 
+    ctx.save();
+
+    ctx.translate(x,y);
+
+    ctx.scale(scale,scale);
+
     if(keeper.active){
 
         ctx.rotate(
-            lean*.25
+            lean*.20
         );
     }
 
+
     /*
-       Ground shadow.
+       Shadow.
     */
 
     ctx.fillStyle="#0007";
@@ -3715,16 +3220,16 @@ function drawKeeper(){
 
     ctx.ellipse(
         0,
-        s*1.15,
-        s*.85+
-        Math.abs(lean)*s*.6,
-        s*.13,
+        61,
+        38+Math.abs(lean)*20,
+        6,
         0,
         0,
         Math.PI*2
     );
 
     ctx.fill();
+
 
     /*
        Legs.
@@ -3734,38 +3239,39 @@ function drawKeeper(){
         team.secondary;
 
     ctx.fillRect(
-        -s*.30,
-        s*.20,
-        s*.22,
-        s*.75
+        -17,
+        18,
+        13,
+        40
     );
 
     ctx.fillRect(
-        s*.08,
-        s*.20,
-        s*.22,
-        s*.75
+        4,
+        18,
+        13,
+        40
     );
 
+
     /*
-       Body.
+       Body / jersey.
     */
 
     ctx.fillStyle=
-        team.keeper ||
         team.primary;
 
     ctx.beginPath();
 
     ctx.roundRect(
-        -s*.50,
-        -s*.82,
-        s,
-        s*1.12,
-        s*.14
+        -25,
+        -43,
+        50,
+        65,
+        7
     );
 
     ctx.fill();
+
 
     /*
        Jersey stripe.
@@ -3775,197 +3281,164 @@ function drawKeeper(){
         team.secondary;
 
     ctx.fillRect(
-        -s*.07,
-        -s*.82,
-        s*.14,
-        s*1.12
+        -4,
+        -43,
+        8,
+        65
     );
+
 
     /*
        Arms.
     */
 
-    const arm=
-        s*.65+
-        Math.abs(lean)*s*.75;
+    const armLength =
+        32+
+        Math.abs(lean)*35;
 
     ctx.strokeStyle=
-        team.keeper ||
         team.primary;
 
-    ctx.lineWidth=
-        s*.22;
+    ctx.lineWidth=13;
 
     ctx.lineCap="round";
 
     ctx.beginPath();
 
     ctx.moveTo(
-        -s*.42,
-        -s*.55
+        -20,
+        -25
     );
 
     ctx.lineTo(
         lean<0
-        ? -arm
-        : -s*.62,
-        -s*.28
+        ? -armLength
+        : -31,
+        -10
     );
 
     ctx.moveTo(
-        s*.42,
-        -s*.55
+        20,
+        -25
     );
 
     ctx.lineTo(
         lean>0
-        ? arm
-        : s*.62,
-        -s*.28
+        ? armLength
+        : 31,
+        -10
     );
 
     ctx.stroke();
+
 
     /*
        Gloves.
     */
 
-    ctx.fillStyle="#f0f2f2";
+    ctx.fillStyle="#f1f4f5";
 
     ctx.beginPath();
 
     ctx.arc(
         lean<0
-        ? -arm
-        : -s*.62,
-        -s*.28,
-        s*.14,
+        ? -armLength
+        : -31,
+        -10,
+        8,
         0,
         Math.PI*2
     );
 
     ctx.arc(
         lean>0
-        ? arm
-        : s*.62,
-        -s*.28,
-        s*.14,
+        ? armLength
+        : 31,
+        -10,
+        8,
         0,
         Math.PI*2
     );
 
     ctx.fill();
+
 
     /*
        Head.
     */
 
-    ctx.fillStyle="#a96850";
+    ctx.fillStyle="#b9795d";
 
     ctx.beginPath();
 
     ctx.arc(
         0,
-        -s*1.12,
-        s*.32,
+        -61,
+        16,
         0,
         Math.PI*2
     );
 
     ctx.fill();
 
+
     /*
        Hair.
     */
 
-    ctx.fillStyle="#17191b";
+    ctx.fillStyle="#15171a";
 
     ctx.beginPath();
 
     ctx.arc(
         0,
-        -s*1.21,
-        s*.31,
+        -66,
+        16,
         Math.PI,
         Math.PI*2
     );
 
     ctx.fill();
 
-    /*
-       Small team badge.
-    */
-
-    ctx.fillStyle=
-        team.secondary;
-
-    ctx.font=
-        `bold ${Math.max(7,s*.19)}px Arial`;
-
-    ctx.textAlign="center";
-
-    ctx.fillText(
-        team.badge,
-        0,
-        -s*.20
-    );
 
     ctx.restore();
 }
 
 
-/* =====================================================
-   DRAW PLAYER
-===================================================== */
+/* =========================================================
+   PLAYER
+========================================================= */
 
 function drawPlayer(){
 
     if(!game.yourTeam)
         return;
 
-    /*
-       Player is positioned far behind
-       the keeper.
+    const g =
+        geometry();
 
-       This creates a much more natural
-       penalty camera.
-    */
-
-    const p=
-        worldToScreen(
-            player.x,
-            WORLD.shooterZ
-        );
-
-    const s=
-        clamp(
-            W*.050,
-            35,
-            66
-        );
-
-    const team=
+    const team =
         game.yourTeam;
+
+    const v=view();
+
+    const x =
+        v.w/2;
+
+    const y =
+        g.playerY;
+
+    const scale =
+        g.mobile
+        ? clamp(v.w/520,.55,.82)
+        : clamp(v.w/900,.7,1.05);
 
     ctx.save();
 
-    ctx.translate(
-        p.x,
-        p.y
-    );
+    ctx.translate(x,y);
 
-    /*
-       Kick animation.
-    */
+    ctx.scale(scale,scale);
 
-    const kick=
-        player.kickAnimation;
-
-    const legSwing=
-        Math.sin(
-            kick*Math.PI
-        )*
-        s*.35;
 
     /*
        Shadow.
@@ -3977,84 +3450,84 @@ function drawPlayer(){
 
     ctx.ellipse(
         0,
-        s*.95,
-        s*.75,
-        s*.13,
+        78,
+        48,
+        9,
         0,
         0,
         Math.PI*2
     );
 
     ctx.fill();
+
 
     /*
        Legs.
     */
 
-    ctx.strokeStyle=
-        "#101317";
+    ctx.fillStyle=
+        team.secondary;
 
-    ctx.lineWidth=
-        s*.20;
-
-    ctx.lineCap="round";
-
-    ctx.beginPath();
-
-    ctx.moveTo(
-        -s*.14,
-        s*.38
+    ctx.fillRect(
+        -22,
+        28,
+        18,
+        52
     );
 
-    ctx.lineTo(
-        -s*.20-legSwing,
-        s*.92
+    ctx.fillRect(
+        5,
+        28,
+        18,
+        52
     );
 
-    ctx.moveTo(
-        s*.14,
-        s*.38
-    );
-
-    ctx.lineTo(
-        s*.20+legSwing,
-        s*.92
-    );
-
-    ctx.stroke();
 
     /*
-       Boots.
+       Socks.
     */
 
-    ctx.fillStyle="#101216";
+    ctx.fillStyle=
+        team.primary;
 
-    ctx.beginPath();
-
-    ctx.ellipse(
-        -s*.25-legSwing,
-        s*.96,
-        s*.20,
-        s*.09,
-        -.15,
-        0,
-        Math.PI*2
+    ctx.fillRect(
+        -22,
+        62,
+        18,
+        18
     );
 
-    ctx.ellipse(
-        s*.25+legSwing,
-        s*.96,
-        s*.20,
-        s*.09,
-        .15,
-        0,
-        Math.PI*2
+    ctx.fillRect(
+        5,
+        62,
+        18,
+        18
     );
 
-    ctx.fill();
 
     /*
-       Body.
+       Shoes.
+    */
+
+    ctx.fillStyle="#f1f1f1";
+
+    ctx.fillRect(
+        -28,
+        77,
+        25,
+        7
+    );
+
+    ctx.fillRect(
+        4,
+        77,
+        25,
+        7
+    );
+
+
+    /*
+       Jersey.
     */
 
     ctx.fillStyle=
@@ -4063,28 +3536,52 @@ function drawPlayer(){
     ctx.beginPath();
 
     ctx.roundRect(
-        -s*.42,
-        -s*.72,
-        s*.84,
-        s*1.12,
-        s*.10
+        -31,
+        -52,
+        62,
+        86,
+        8
     );
 
     ctx.fill();
 
+
     /*
-       Jersey secondary pattern.
+       Jersey design.
     */
 
     ctx.fillStyle=
         team.secondary;
 
     ctx.fillRect(
-        -s*.10,
-        -s*.72,
-        s*.20,
-        s*1.12
+        -5,
+        -52,
+        10,
+        86
     );
+
+
+    /*
+       Shorts.
+    */
+
+    ctx.fillStyle=
+        team.secondary;
+
+    ctx.fillRect(
+        -30,
+        27,
+        28,
+        27
+    );
+
+    ctx.fillRect(
+        2,
+        27,
+        28,
+        27
+    );
+
 
     /*
        Arms.
@@ -4093,50 +3590,92 @@ function drawPlayer(){
     ctx.strokeStyle=
         team.primary;
 
-    ctx.lineWidth=
-        s*.19;
+    ctx.lineWidth=16;
+
+    ctx.lineCap="round";
 
     ctx.beginPath();
 
     ctx.moveTo(
-        -s*.35,
-        -s*.48
+        -28,
+        -32
     );
 
     ctx.lineTo(
-        -s*.65,
-        -s*.05
+        -46,
+        18
     );
 
     ctx.moveTo(
-        s*.35,
-        -s*.48
+        28,
+        -32
     );
 
     ctx.lineTo(
-        s*.65,
-        -s*.05
+        46,
+        18
     );
 
     ctx.stroke();
 
+
     /*
-       Head.
+       Hands.
     */
 
-    ctx.fillStyle="#a96850";
+    ctx.fillStyle="#b9795d";
 
     ctx.beginPath();
 
     ctx.arc(
+        -46,
+        20,
+        8,
         0,
-        -s*.98,
-        s*.29,
+        Math.PI*2
+    );
+
+    ctx.arc(
+        46,
+        20,
+        8,
         0,
         Math.PI*2
     );
 
     ctx.fill();
+
+
+    /*
+       Neck.
+    */
+
+    ctx.fillStyle="#b9795d";
+
+    ctx.fillRect(
+        -8,
+        -65,
+        16,
+        16
+    );
+
+
+    /*
+       Head.
+    */
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        -77,
+        21,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
 
     /*
        Hair.
@@ -4148,72 +3687,120 @@ function drawPlayer(){
 
     ctx.arc(
         0,
-        -s*1.06,
-        s*.29,
+        -83,
+        21,
         Math.PI,
         Math.PI*2
     );
 
     ctx.fill();
 
+
     /*
-       Jersey badge.
+       Jersey number.
     */
 
     ctx.fillStyle=
-        team.secondary;
+        team.secondary==="#ffffff"
+        ? "#111"
+        : "#fff";
 
     ctx.font=
-        `bold ${Math.max(7,s*.18)}px Arial`;
+        "1000 18px Arial";
 
     ctx.textAlign="center";
 
     ctx.fillText(
-        team.badge,
+        "10",
         0,
-        -s*.18
+        -5
     );
 
+
     /*
-       Player name.
+       Team abbreviation.
     */
 
-    ctx.fillStyle="rgba(255,255,255,.7)";
-
     ctx.font=
-        `bold ${Math.max(6,s*.13)}px Arial`;
+        "1000 8px Arial";
 
     ctx.fillText(
-        "YOU",
+        team.short,
         0,
-        s*1.22
+        12
     );
 
     ctx.restore();
 }
 
 
-/* =====================================================
-   BALL
-===================================================== */
+/* =========================================================
+   BALL POSITION
+========================================================= */
+
+function ballScreen(t){
+
+    const g =
+        geometry();
+
+    const v=view();
+
+    /*
+       Ball begins close to player
+       and travels toward goal.
+    */
+
+    const startX =
+        v.w/2;
+
+    const startY =
+        g.playerY-25;
+
+    const endX =
+        g.goalLeft+
+        ((ball.targetX+3.66)/7.32)*
+        (g.goalRight-g.goalLeft);
+
+    const endY =
+        g.goalBottom-
+        (ball.targetZ/2.44)*
+        (g.goalBottom-g.goalTop);
+
+    return{
+
+        x:lerp(
+            startX,
+            endX,
+            ease(t)
+        ),
+
+        y:
+            lerp(
+                startY,
+                endY,
+                t
+            )-
+            Math.sin(Math.PI*t)*
+            (g.mobile?25:35)
+    };
+}
+
+
+/* =========================================================
+   BALL DRAW
+========================================================= */
 
 function drawBall(){
 
     if(!ball.active)
         return;
 
-    /*
-       Trail.
-    */
-
     ball.trail.forEach(
         (p,i)=>{
 
-            const alpha=
-                (
-                    i/
-                    ball.trail.length
-                )*.20;
+            const alpha =
+                i/
+                ball.trail.length*.18;
 
             ctx.fillStyle=
                 `rgba(255,255,255,${alpha})`;
@@ -4232,39 +3819,40 @@ function drawBall(){
         }
     );
 
-    const p=
-        ballScreen();
-
-    const t=
+    const t =
         clamp(
-            (
-                ball.startZ-
-                ball.currentZ
-            )/
-            ball.startZ,
+            (performance.now()-ball.startTime)/
+            (1000*ball.duration),
             0,
             1
         );
 
-    const r=
+    const p =
+        ballScreen(t);
+
+    const g =
+        geometry();
+
+    const r =
         lerp(
-            Math.max(8,W*.012),
-            Math.max(4,W*.006),
+            g.mobile?10:13,
+            g.mobile?5:7,
             t
         );
 
+
     /*
-       Ball shadow.
+       Shadow.
     */
 
-    ctx.fillStyle="#0007";
+    ctx.fillStyle="#0008";
 
     ctx.beginPath();
 
     ctx.ellipse(
         p.x,
-        p.y+r*1.4,
-        r*1.3,
+        p.y+r*.8,
+        r*1.2,
         r*.35,
         0,
         0,
@@ -4273,11 +3861,12 @@ function drawBall(){
 
     ctx.fill();
 
+
     /*
        Ball.
     */
 
-    const g=
+    const grad =
         ctx.createRadialGradient(
             p.x-r*.35,
             p.y-r*.35,
@@ -4287,22 +3876,22 @@ function drawBall(){
             r
         );
 
-    g.addColorStop(
+    grad.addColorStop(
         0,
-        "#fff"
+        "#ffffff"
     );
 
-    g.addColorStop(
+    grad.addColorStop(
         .75,
-        "#e4e8e9"
+        "#e4e7e9"
     );
 
-    g.addColorStop(
+    grad.addColorStop(
         1,
-        "#899297"
+        "#858e94"
     );
 
-    ctx.fillStyle=g;
+    ctx.fillStyle=grad;
 
     ctx.beginPath();
 
@@ -4316,11 +3905,7 @@ function drawBall(){
 
     ctx.fill();
 
-    /*
-       Simple ball panels.
-    */
-
-    ctx.strokeStyle="#252a2d";
+    ctx.strokeStyle="#222";
 
     ctx.lineWidth=
         Math.max(
@@ -4354,9 +3939,9 @@ function drawBall(){
 }
 
 
-/* =====================================================
-   AIM TARGET
-===================================================== */
+/* =========================================================
+   TARGET
+========================================================= */
 
 function drawTarget(){
 
@@ -4366,17 +3951,23 @@ function drawTarget(){
     )
         return;
 
-    const p=
-        goalPoint(
-            selectedZone.x,
-            selectedZone.z
-        );
+    const g =
+        geometry();
 
-    const r=
-        Math.max(
-            12,
-            W*.018
-        );
+    const x =
+        g.goalLeft+
+        ((selectedZone.x+3.66)/7.32)*
+        (g.goalRight-g.goalLeft);
+
+    const y =
+        g.goalBottom-
+        (selectedZone.z/2.44)*
+        (g.goalBottom-g.goalTop);
+
+    const radius =
+        g.mobile
+        ? 15
+        : 20;
 
     ctx.save();
 
@@ -4393,9 +3984,9 @@ function drawTarget(){
     ctx.beginPath();
 
     ctx.arc(
-        p.x,
-        p.y,
-        r,
+        x,
+        y,
+        radius,
         0,
         Math.PI*2
     );
@@ -4407,23 +3998,23 @@ function drawTarget(){
     ctx.beginPath();
 
     ctx.moveTo(
-        p.x-r*1.35,
-        p.y
+        x-radius-6,
+        y
     );
 
     ctx.lineTo(
-        p.x+r*1.35,
-        p.y
+        x+radius+6,
+        y
     );
 
     ctx.moveTo(
-        p.x,
-        p.y-r*1.35
+        x,
+        y-radius-6
     );
 
     ctx.lineTo(
-        p.x,
-        p.y+r*1.35
+        x,
+        y+radius+6
     );
 
     ctx.stroke();
@@ -4432,90 +4023,19 @@ function drawTarget(){
 }
 
 
-/* =====================================================
-   CAMERA OVERLAY
-===================================================== */
-
-function drawCameraOverlay(){
-
-    const gradient=
-        ctx.createLinearGradient(
-            0,
-            0,
-            0,
-            H
-        );
-
-    gradient.addColorStop(
-        0,
-        "rgba(0,0,0,.12)"
-    );
-
-    gradient.addColorStop(
-        .5,
-        "rgba(0,0,0,0)"
-    );
-
-    gradient.addColorStop(
-        1,
-        "rgba(0,0,0,.25)"
-    );
-
-    ctx.fillStyle=gradient;
-
-    ctx.fillRect(
-        0,
-        0,
-        W,
-        H
-    );
-
-    /*
-       Cinematic side vignette.
-    */
-
-    const v=
-        ctx.createRadialGradient(
-            W/2,
-            H*.55,
-            W*.25,
-            W/2,
-            H*.55,
-            W*.8
-        );
-
-    v.addColorStop(
-        0,
-        "rgba(0,0,0,0)"
-    );
-
-    v.addColorStop(
-        1,
-        "rgba(0,0,0,.25)"
-    );
-
-    ctx.fillStyle=v;
-
-    ctx.fillRect(
-        0,
-        0,
-        W,
-        H
-    );
-}
-
-
-/* =====================================================
+/* =========================================================
    RENDER
-===================================================== */
+========================================================= */
 
 function render(){
+
+    const v=view();
 
     ctx.clearRect(
         0,
         0,
-        W,
-        H
+        v.w,
+        v.h
     );
 
     drawBackground();
@@ -4524,15 +4044,7 @@ function render(){
 
     drawGoal();
 
-    /*
-       Keeper is close to goal.
-    */
-
     drawKeeper();
-
-    /*
-       Player is far behind.
-    */
 
     drawPlayer();
 
@@ -4540,38 +4052,70 @@ function render(){
 
     drawBall();
 
-    drawCameraOverlay();
+
+    /*
+       Bottom vignette.
+    */
+
+    const vignette =
+        ctx.createLinearGradient(
+            0,
+            v.h*.55,
+            0,
+            v.h
+        );
+
+    vignette.addColorStop(
+        0,
+        "rgba(0,0,0,0)"
+    );
+
+    vignette.addColorStop(
+        1,
+        "rgba(0,0,0,.30)"
+    );
+
+    ctx.fillStyle=vignette;
+
+    ctx.fillRect(
+        0,
+        v.h*.55,
+        v.w,
+        v.h*.45
+    );
 }
 
 
-/* =====================================================
-   ANIMATION
-===================================================== */
+/* =========================================================
+   DIFFICULTY
+========================================================= */
+
+$("difficulty").addEventListener(
+    "change",
+    ()=>{
+        game.difficulty =
+            $("difficulty").value;
+
+        if(game.active){
+
+            status(
+                "DIFFICULTY UPDATED",
+                "Keeper AI changed for the next shot"
+            );
+        }
+    }
+);
+
+
+/* =========================================================
+   LOOP
+========================================================= */
 
 function loop(now){
 
     updateBall(now);
 
     updateKeeper(now);
-
-    /*
-       Slowly finish kick animation.
-    */
-
-    if(
-        player.kickAnimation>0
-    ){
-
-        player.kickAnimation+=
-            .025;
-
-        if(
-            player.kickAnimation>=1
-        ){
-
-            player.kickAnimation=0;
-        }
-    }
 
     render();
 
@@ -4581,94 +4125,18 @@ function loop(now){
 requestAnimationFrame(loop);
 
 
-/* =====================================================
-   DIFFICULTY
-===================================================== */
-
-$("difficulty").onchange=()=>{
-
-    updateDifficulty();
-
-    if(game.active){
-
-        status(
-            "DIFFICULTY UPDATED",
-            "Goalkeeper AI changed for the next penalty"
-        );
-    }
-};
-
-
-/* =====================================================
-   FULLSCREEN
-===================================================== */
-
-$("fullscreenBtn").onclick=
-async()=>{
-
-    try{
-
-        if(
-            !document.fullscreenElement
-        ){
-
-            await document
-                .documentElement
-                .requestFullscreen();
-
-        }else{
-
-            await document
-                .exitFullscreen();
-        }
-
-    }catch(e){
-
-        console.log(
-            "Fullscreen unavailable",
-            e
-        );
-    }
-};
-
-
-/* =====================================================
-   MOBILE TOUCH / SCREEN WAKE
-===================================================== */
-
-document.addEventListener(
-    "touchmove",
-    e=>{
-        if(
-            e.target.closest(
-                "#gameFrame"
-            )
-        ){
-
-            /*
-               Prevent browser page
-               movement.
-            */
-
-            e.preventDefault();
-        }
-    },
-    {
-        passive:false
-    }
-);
-
-
-/* =====================================================
+/* =========================================================
    INITIAL
-===================================================== */
+========================================================= */
+
+setupSlots();
+
+updateScoreboard();
 
 status(
     "SELECT TEAMS",
     "Choose your team and opponent"
 );
-
-updateScoreboard();
 
 </script>
 
