@@ -1,59 +1,4314 @@
-<!doctype html>
-<html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width,
+               initial-scale=1,
+               maximum-scale=1,
+               user-scalable=no,
+               viewport-fit=cover">
+
 <title>ISL Penalty Shootout</title>
+
 <style>
-:root{--a:#f4c400;--b:#123d91}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#020506;color:#fff;font-family:Inter,Segoe UI,Arial,sans-serif}button,select,input{font:inherit}button{cursor:pointer}#app,#frame{width:100%;height:100%}#app{display:flex;align-items:center;justify-content:center}#frame{position:relative;overflow:hidden;width:min(1600px,100vw);height:min(900px,100vh);aspect-ratio:16/9;border:1px solid #ffffff2b;border-radius:14px;background:#123;box-shadow:0 25px 80px #000}canvas{width:100%;height:100%;display:block;touch-action:none}
-/* team screen */#teams{position:absolute;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;padding:24px;background:#020609ed;backdrop-filter:blur(12px)}.panel{width:min(920px,100%);max-height:94%;overflow:auto;padding:28px;border:1px solid #ffffff28;border-radius:18px;background:linear-gradient(145deg,#101b22,#050b10);box-shadow:0 30px 90px #000}.title{text-align:center;font-size:clamp(25px,4vw,48px);font-weight:1000;letter-spacing:2px}.sub{text-align:center;color:#89979f;font-size:11px;letter-spacing:2px;margin:6px 0 25px}.st{color:#9ca9b1;font-size:10px;font-weight:1000;letter-spacing:1.7px;margin:18px 0 9px}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.team{min-height:86px;padding:10px 6px;border:1px solid #ffffff1f;border-radius:11px;background:linear-gradient(#16242d,#091117);color:#fff}.team.selected{border-color:var(--a);box-shadow:0 0 0 2px var(--a),0 0 28px #f4c4002b}.badge{width:35px;height:35px;margin:auto;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:1000;border:2px solid}.tn{margin-top:8px;font-size:10px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#start{display:block;width:270px;max-width:100%;height:49px;margin:26px auto 0;border:0;border-radius:9px;background:linear-gradient(#ffe85a,#d6a817);font-size:11px;font-weight:1000}#start:disabled{opacity:.35}
-/* HUD */#hud{position:absolute;z-index:5;top:14px;left:14px;right:14px;display:flex;justify-content:space-between;align-items:flex-start;pointer-events:none}.score{width:340px;max-width:43%;overflow:hidden;border:1px solid #ffffff2b;border-radius:8px;background:#03090eee;backdrop-filter:blur(10px);box-shadow:0 12px 35px #0009}.row{display:grid;grid-template-columns:70px 1fr 50px;min-height:47px;border-bottom:1px solid #ffffff18}.row:last-child{border:0}.name,.num{display:flex;align-items:center;justify-content:center;font-weight:1000}.name{font-size:12px}.slots{display:flex;align-items:center;justify-content:center;gap:5px}.slot{width:21px;height:15px;border:1px solid #fff;background:#e6eaec;border-radius:2px}.slot.goal{background:#22d579;border-color:#a1ffd0}.slot.miss{background:#ed4a58;border-color:#ffb0b8}.num{background:#f4cf1b;color:#111;font-size:21px}.round{position:absolute;left:50%;transform:translateX(-50%);padding:8px 20px;border:1px solid #ffffff24;border-radius:30px;background:#03090ee8;text-align:center}.round small{display:block;color:#89979e;font-size:7px;letter-spacing:2px}.round b{font-size:12px}.buttons{display:flex;gap:6px;pointer-events:auto}.btn{height:38px;padding:0 13px;border:1px solid #ffffff2b;border-radius:8px;background:#040c12f5;color:#fff;font-size:9px;font-weight:1000}.reset{background:#b73543}.status{position:absolute;z-index:4;top:92px;left:50%;transform:translateX(-50%);min-width:270px;padding:10px 18px;border:1px solid #ffffff20;border-radius:13px;background:#03090ec7;text-align:center;backdrop-filter:blur(10px)}.status b{display:block;font-size:19px;letter-spacing:1px}.status span{display:block;margin-top:3px;color:#aab5bb;font-size:9px}.diff{position:absolute;z-index:6;top:63px;right:14px;display:none;align-items:center;gap:7px;padding:7px 9px;border:1px solid #ffffff24;border-radius:7px;background:#030a0fee}.diff span{color:#87949b;font-size:7px;font-weight:1000}.diff select{border:0;outline:0;background:transparent;color:#fff;font-size:8px;font-weight:1000}
-/* controls */#shoot,#defend{position:absolute;z-index:8;left:50%;transform:translateX(-50%);display:none}.zones{display:grid;grid-template-columns:repeat(3,72px);gap:5px}.zone{height:35px;border:1px solid #ffffff33;border-radius:6px;background:#030b11f5;color:#fff;font-size:8px;font-weight:1000}.zone.sel{background:var(--a);color:#111}.power{width:220px;margin:8px auto;padding:5px 8px;border:1px solid #ffffff2b;border-radius:20px;background:#030a0ff0}.power input{width:100%;accent-color:var(--a)}#kick{display:block;width:155px;height:40px;margin:auto;border:0;border-radius:8px;background:linear-gradient(#ffe965,#d5a619);font-size:10px;font-weight:1000}.shoot{bottom:14px}.defend{bottom:15px;display:none;gap:7px}.dive{min-width:95px;height:43px;border:1px solid #ffffff33;border-radius:8px;background:#030b11f5;color:#fff;font-size:9px;font-weight:1000}.dive.mid{background:linear-gradient(#31d87d,#109b51);color:#03170b}
-/* real mobile game layout */
-@media(max-width:700px){body{display:block}#app{width:100vw;height:100dvh}#frame{width:100vw;height:100dvh;max-width:none;max-height:none;aspect-ratio:auto;border:0;border-radius:0}.teams{padding:10px}.panel{padding:16px 10px;border-radius:14px}.title{font-size:24px}.sub{font-size:7px;margin:5px 0 12px}.st{font-size:8px;margin:10px 0 6px}.grid{grid-template-columns:repeat(3,1fr);gap:5px}.team{min-height:69px;padding:7px 3px;border-radius:9px}.badge{width:28px;height:28px;font-size:7px}.tn{font-size:7px;margin-top:5px}#start{height:44px;margin-top:14px;font-size:9px}
-#hud{top:calc(7px + env(safe-area-inset-top));left:7px;right:7px}.score{width:230px;max-width:64vw}.row{grid-template-columns:45px 1fr 31px;min-height:34px}.name{font-size:8px}.slots{gap:3px}.slot{width:14px;height:10px}.num{font-size:15px}.round{top:0;min-width:126px;padding:6px 10px}.round small{font-size:5px;letter-spacing:1.4px}.round b{font-size:9px}.buttons{gap:4px}.btn{height:32px;padding:0 8px;font-size:7px}.status{top:78px;min-width:205px;max-width:72vw;padding:8px 12px}.status b{font-size:13px}.status span{font-size:7px}.diff{top:118px;right:7px;padding:6px 8px}.diff span{font-size:6px}.diff select{font-size:7px}
-.shoot{bottom:calc(8px + env(safe-area-inset-bottom));width:100%;padding:0 10px}.zones{width:min(330px,90vw);grid-template-columns:repeat(3,1fr);gap:4px;margin:auto}.zone{height:36px;font-size:8px;border-radius:8px}.power{width:min(280px,78vw);margin:6px auto;padding:6px 10px}.power input{height:20px}#kick{width:min(190px,58vw);height:42px;font-size:10px}.defend{bottom:calc(12px + env(safe-area-inset-bottom));width:100%;padding:0 10px;gap:6px;justify-content:center}.dive{width:min(105px,29vw);min-width:0;height:43px;font-size:8px}
+:root{
+    --accent:#f4c400;
+    --accent2:#123d91;
+    --bg:#05090c;
+    --panel:#091118;
+    --white:#fff;
+    --muted:#9da8ae;
 }
-@media(max-width:700px) and (orientation:landscape){#hud{top:5px}.score{width:205px}.row{grid-template-columns:40px 1fr 28px;min-height:29px}.slot{width:13px;height:9px}.status{top:48px}.shoot{bottom:3px;transform:translateX(-50%) scale(.82);transform-origin:bottom center}.defend{bottom:3px;transform:translateX(-50%) scale(.88);transform-origin:bottom center}}
-@media(max-width:380px) and (orientation:portrait){.score{width:205px}.row{grid-template-columns:40px 1fr 28px}.slot{width:12px;height:9px}.zones{width:94vw}.zone{height:34px;font-size:7px}}
-</style></head><body><div id="app"><div id="frame"><canvas id="game"></canvas>
-<div id="teams"><div class="panel"><div class="title">ISL PENALTY SHOOTOUT</div><div class="sub">SELECT YOUR TEAM AND OPPONENT</div><div class="st">YOUR TEAM</div><div class="grid" id="your"></div><div class="st">OPPONENT</div><div class="grid" id="opponent"></div><button id="start" disabled>START MATCH</button></div></div>
-<div id="hud"><div class="score"><div class="row"><div class="name" id="yn">YOU</div><div class="slots" id="ys"></div><div class="num" id="ysc">0</div></div><div class="row"><div class="name" id="on">CPU</div><div class="slots" id="os"></div><div class="num" id="osc">0</div></div></div><div class="round"><small>ISL PENALTY SHOOTOUT</small><b>ROUND <span id="r">1</span> / <span id="mr">5</span></b></div><div class="buttons"><button class="btn" id="teamsBtn">TEAMS</button><button class="btn reset" id="reset">RESET</button></div></div>
-<div class="status"><b id="sm">SELECT TEAMS</b><span id="ss">Choose your team and opponent</span></div><div class="diff" id="diff"><span>DIFFICULTY</span><select id="difficulty"><option value="easy">EASY</option><option value="medium" selected>MEDIUM</option><option value="hard">HARD</option></select></div>
-<div id="shoot" class="shoot"><div class="zones"><button class="zone" data-x="-2.75" data-z="2.05">↖ HIGH</button><button class="zone" data-x="0" data-z="2.05">↑ HIGH</button><button class="zone" data-x="2.75" data-z="2.05">↗ HIGH</button><button class="zone" data-x="-2.75" data-z="1.2">← MID</button><button class="zone sel" data-x="0" data-z="1.2">CENTER</button><button class="zone" data-x="2.75" data-z="1.2">MID →</button><button class="zone" data-x="-2.75" data-z=".32">↙ LOW</button><button class="zone" data-x="0" data-z=".32">↓ LOW</button><button class="zone" data-x="2.75" data-z=".32">↘ LOW</button></div><div class="power"><input id="power" type="range" min="40" max="100" value="76"></div><button id="kick">SHOOT</button></div>
-<div id="defend" class="defend"><button class="dive" data-d="-1">← LEFT</button><button class="dive mid" data-d="0">CENTER</button><button class="dive" data-d="1">RIGHT →</button></div>
-</div></div>
+
+*{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+    user-select:none;
+}
+
+html,
+body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#020508;
+    color:#fff;
+    font-family:
+        Inter,
+        Segoe UI,
+        Arial,
+        sans-serif;
+}
+
+body{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+button,
+select,
+input{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
+}
+
+#app{
+    width:100%;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+/* =========================================================
+   GAME FRAME
+========================================================= */
+
+#gameFrame{
+    position:relative;
+    width:min(100vw,177.7778vh);
+    height:min(100vh,56.25vw);
+
+    overflow:hidden;
+
+    background:#0b2413;
+
+    border:1px solid rgba(255,255,255,.18);
+    border-radius:15px;
+
+    box-shadow:
+        0 30px 100px rgba(0,0,0,.85),
+        0 0 0 1px rgba(255,255,255,.04);
+}
+
+#game{
+    position:absolute;
+    inset:0;
+
+    width:100%;
+    height:100%;
+
+    display:block;
+
+    touch-action:none;
+}
+
+/* =========================================================
+   TEAM SCREEN
+========================================================= */
+
+#teamScreen{
+    position:absolute;
+    inset:0;
+    z-index:500;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    padding:24px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(2,7,10,.91),
+            rgba(1,5,8,.98)
+        );
+
+    backdrop-filter:blur(12px);
+}
+
+.teamPanel{
+    width:min(920px,100%);
+    max-height:94%;
+
+    overflow:auto;
+
+    padding:28px;
+
+    border-radius:18px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(16,26,34,.98),
+            rgba(4,10,15,.99)
+        );
+
+    border:1px solid rgba(255,255,255,.15);
+
+    box-shadow:0 30px 90px #000;
+}
+
+.gameTitle{
+    text-align:center;
+
+    font-size:clamp(25px,4vw,48px);
+    font-weight:1000;
+
+    letter-spacing:2px;
+}
+
+.gameSubtitle{
+    margin-top:6px;
+    margin-bottom:24px;
+
+    text-align:center;
+
+    color:#87959d;
+
+    font-size:10px;
+    font-weight:700;
+
+    letter-spacing:2px;
+}
+
+.selectionTitle{
+    margin:18px 0 9px;
+
+    color:#9ba8af;
+
+    font-size:10px;
+    font-weight:1000;
+
+    letter-spacing:1.5px;
+}
+
+.teamGrid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:9px;
+}
+
+.teamCard{
+    min-height:86px;
+
+    padding:10px 6px;
+
+    border-radius:11px;
+
+    border:1px solid rgba(255,255,255,.12);
+
+    background:
+        linear-gradient(
+            180deg,
+            #17262f,
+            #091117
+        );
+
+    color:#fff;
+
+    transition:.16s ease;
+}
+
+.teamCard:active{
+    transform:scale(.97);
+}
+
+.teamCard.selected{
+    border-color:var(--accent);
+
+    box-shadow:
+        0 0 0 2px var(--accent),
+        0 0 30px rgba(255,205,40,.16);
+}
+
+.teamBadge{
+    width:35px;
+    height:35px;
+
+    margin:auto;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:50%;
+
+    font-size:9px;
+    font-weight:1000;
+
+    border:2px solid rgba(255,255,255,.4);
+}
+
+.teamName{
+    margin-top:8px;
+
+    font-size:10px;
+    font-weight:900;
+
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+#startMatch{
+    display:block;
+
+    width:270px;
+    max-width:100%;
+    height:49px;
+
+    margin:25px auto 0;
+
+    border:0;
+    border-radius:9px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #ffe75b,
+            #d4a717
+        );
+
+    color:#171200;
+
+    font-size:11px;
+    font-weight:1000;
+    letter-spacing:1px;
+}
+
+#startMatch:disabled{
+    opacity:.35;
+}
+
+/* =========================================================
+   HUD
+========================================================= */
+
+#topHUD{
+    position:absolute;
+    z-index:100;
+
+    top:13px;
+    left:13px;
+    right:13px;
+
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+
+    pointer-events:none;
+}
+
+.scoreBox{
+    width:340px;
+    max-width:44%;
+
+    overflow:hidden;
+
+    border-radius:8px;
+
+    background:rgba(3,9,14,.94);
+
+    border:1px solid rgba(255,255,255,.17);
+
+    box-shadow:0 12px 35px #0009;
+
+    backdrop-filter:blur(10px);
+}
+
+.scoreTeam{
+    display:grid;
+
+    grid-template-columns:70px 1fr 50px;
+
+    min-height:47px;
+
+    border-bottom:1px solid rgba(255,255,255,.1);
+}
+
+.scoreTeam:last-child{
+    border-bottom:0;
+}
+
+.scoreName{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:12px;
+    font-weight:1000;
+}
+
+.scoreSlots{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    gap:5px;
+}
+
+.slot{
+    width:21px;
+    height:15px;
+
+    border-radius:2px;
+
+    border:1px solid rgba(255,255,255,.8);
+
+    background:#e7ebed;
+}
+
+.slot.goal{
+    background:#24d47b;
+    border-color:#a5ffd1;
+}
+
+.slot.miss{
+    background:#ed4b59;
+    border-color:#ffafb7;
+}
+
+.scoreNumber{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:#f4cf1b;
+
+    color:#111;
+
+    font-size:21px;
+    font-weight:1000;
+}
+
+#centerInfo{
+    position:absolute;
+
+    left:50%;
+    transform:translateX(-50%);
+
+    min-width:155px;
+
+    padding:7px 18px;
+
+    text-align:center;
+
+    border-radius:30px;
+
+    background:rgba(3,9,14,.9);
+
+    border:1px solid rgba(255,255,255,.14);
+
+    backdrop-filter:blur(9px);
+}
+
+#centerInfo small{
+    display:block;
+
+    color:#89979e;
+
+    font-size:7px;
+
+    letter-spacing:2px;
+}
+
+#centerInfo strong{
+    font-size:12px;
+}
+
+#gameButtons{
+    display:flex;
+    gap:7px;
+
+    pointer-events:auto;
+}
+
+.smallBtn{
+    height:37px;
+
+    padding:0 13px;
+
+    border-radius:8px;
+
+    border:1px solid rgba(255,255,255,.17);
+
+    background:rgba(4,12,18,.95);
+
+    color:#fff;
+
+    font-size:9px;
+    font-weight:1000;
+}
+
+#resetBtn{
+    background:#b73543;
+}
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+#statusBox{
+    position:absolute;
+
+    z-index:90;
+
+    top:91px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    min-width:270px;
+
+    padding:10px 18px;
+
+    text-align:center;
+
+    border-radius:12px;
+
+    background:rgba(3,9,14,.78);
+
+    border:1px solid rgba(255,255,255,.13);
+
+    backdrop-filter:blur(10px);
+}
+
+#statusMain{
+    font-size:19px;
+    font-weight:1000;
+    letter-spacing:1px;
+}
+
+#statusSub{
+    margin-top:3px;
+
+    color:#aab5bb;
+
+    font-size:9px;
+}
+
+/* =========================================================
+   DIFFICULTY
+========================================================= */
+
+#difficultyBox{
+    position:absolute;
+
+    z-index:100;
+
+    top:63px;
+    right:13px;
+
+    display:none;
+    align-items:center;
+
+    gap:7px;
+
+    padding:7px 9px;
+
+    border-radius:7px;
+
+    background:rgba(3,10,15,.94);
+
+    border:1px solid rgba(255,255,255,.14);
+}
+
+#difficultyBox span{
+    color:#87949b;
+
+    font-size:7px;
+    font-weight:1000;
+}
+
+#difficulty{
+    background:transparent;
+
+    color:#fff;
+
+    border:0;
+    outline:0;
+
+    font-size:8px;
+    font-weight:1000;
+}
+
+/* =========================================================
+   SHOOT CONTROLS
+========================================================= */
+
+#shootControls{
+    position:absolute;
+
+    z-index:120;
+
+    left:50%;
+    bottom:14px;
+
+    transform:translateX(-50%);
+
+    display:none;
+
+    flex-direction:column;
+    align-items:center;
+
+    gap:8px;
+}
+
+.zoneGrid{
+    display:grid;
+
+    grid-template-columns:repeat(3,72px);
+
+    gap:5px;
+}
+
+.zone{
+    height:35px;
+
+    border-radius:6px;
+
+    border:1px solid rgba(255,255,255,.2);
+
+    background:rgba(3,11,17,.95);
+
+    color:#fff;
+
+    font-size:8px;
+    font-weight:1000;
+}
+
+.zone.selected{
+    background:var(--accent);
+
+    color:#111;
+
+    border-color:#fff4a0;
+}
+
+.powerWrap{
+    width:220px;
+
+    padding:5px 8px;
+
+    border-radius:20px;
+
+    background:rgba(3,10,15,.94);
+
+    border:1px solid rgba(255,255,255,.17);
+}
+
+#power{
+    width:100%;
+    accent-color:var(--accent);
+}
+
+#shootBtn{
+    width:155px;
+    height:40px;
+
+    border:0;
+    border-radius:8px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #ffe965,
+            #d5a619
+        );
+
+    color:#151200;
+
+    font-size:10px;
+    font-weight:1000;
+
+    letter-spacing:1px;
+}
+
+/* =========================================================
+   DEFEND CONTROLS
+========================================================= */
+
+#defendControls{
+    position:absolute;
+
+    z-index:120;
+
+    left:50%;
+    bottom:16px;
+
+    transform:translateX(-50%);
+
+    display:none;
+
+    gap:7px;
+}
+
+.diveBtn{
+    min-width:95px;
+    height:43px;
+
+    border-radius:8px;
+
+    border:1px solid rgba(255,255,255,.2);
+
+    background:rgba(3,11,17,.95);
+
+    color:#fff;
+
+    font-size:9px;
+    font-weight:1000;
+}
+
+.diveBtn.center{
+    background:
+        linear-gradient(
+            180deg,
+            #31d87d,
+            #109b51
+        );
+
+    color:#03170b;
+}
+
+/* =========================================================
+   MOBILE PORTRAIT
+========================================================= */
+
+@media(max-width:700px){
+
+    body{
+        width:100vw;
+        height:100svh;
+    }
+
+    #gameFrame{
+        width:100vw;
+        height:100svh;
+
+        min-width:0;
+        min-height:0;
+
+        border:0;
+        border-radius:0;
+
+        box-shadow:none;
+    }
+
+    #topHUD{
+        top:
+            max(
+                7px,
+                env(safe-area-inset-top)
+            );
+
+        left:7px;
+        right:7px;
+    }
+
+    .scoreBox{
+        width:196px;
+        max-width:none;
+    }
+
+    .scoreTeam{
+        grid-template-columns:39px 1fr 30px;
+        min-height:31px;
+    }
+
+    .scoreName{
+        font-size:8px;
+    }
+
+    .scoreSlots{
+        gap:3px;
+    }
+
+    .slot{
+        width:13px;
+        height:9px;
+    }
+
+    .scoreNumber{
+        font-size:14px;
+    }
+
+    #centerInfo{
+        top:
+            max(
+                7px,
+                env(safe-area-inset-top)
+            );
+
+        min-width:118px;
+
+        padding:6px 10px;
+    }
+
+    #centerInfo small{
+        font-size:5px;
+        letter-spacing:1.5px;
+    }
+
+    #centerInfo strong{
+        font-size:9px;
+    }
+
+    #gameButtons{
+        gap:5px;
+    }
+
+    .smallBtn{
+        height:31px;
+        padding:0 8px;
+        font-size:6px;
+    }
+
+    #statusBox{
+        top:74px;
+
+        min-width:180px;
+        max-width:calc(100vw - 28px);
+
+        padding:7px 11px;
+
+        border-radius:9px;
+    }
+
+    #statusMain{
+        font-size:12px;
+    }
+
+    #statusSub{
+        font-size:7px;
+    }
+
+    #difficultyBox{
+        top:112px;
+        right:7px;
+
+        padding:5px 7px;
+    }
+
+    #difficultyBox span{
+        font-size:5px;
+    }
+
+    #difficulty{
+        font-size:7px;
+    }
+
+    /* -----------------------------------------------------
+       MOBILE SHOOTING
+    ----------------------------------------------------- */
+
+    #shootControls{
+        bottom:
+            max(
+                10px,
+                env(safe-area-inset-bottom)
+            );
+
+        width:100%;
+
+        gap:7px;
+    }
+
+    .zoneGrid{
+        grid-template-columns:repeat(3,64px);
+        gap:4px;
+    }
+
+    .zone{
+        height:35px;
+
+        border-radius:7px;
+
+        font-size:7px;
+    }
+
+    .powerWrap{
+        width:210px;
+
+        padding:5px 9px;
+    }
+
+    #power{
+        height:20px;
+    }
+
+    #shootBtn{
+        width:150px;
+        height:42px;
+
+        border-radius:9px;
+
+        font-size:9px;
+    }
+
+    /* -----------------------------------------------------
+       MOBILE DEFENDING
+    ----------------------------------------------------- */
+
+    #defendControls{
+        bottom:
+            max(
+                12px,
+                env(safe-area-inset-bottom)
+            );
+
+        width:100%;
+
+        padding:0 10px;
+
+        gap:5px;
+    }
+
+    .diveBtn{
+        flex:1;
+
+        min-width:0;
+
+        height:48px;
+
+        border-radius:9px;
+
+        font-size:8px;
+    }
+
+    /* -----------------------------------------------------
+       TEAM SCREEN
+    ----------------------------------------------------- */
+
+    #teamScreen{
+        padding:
+            max(10px,env(safe-area-inset-top))
+            9px
+            max(10px,env(safe-area-inset-bottom))
+            9px;
+    }
+
+    .teamPanel{
+        width:100%;
+        max-height:100%;
+
+        padding:17px 10px;
+
+        border-radius:13px;
+    }
+
+    .gameTitle{
+        font-size:24px;
+        letter-spacing:1.2px;
+    }
+
+    .gameSubtitle{
+        margin-bottom:13px;
+        font-size:7px;
+    }
+
+    .selectionTitle{
+        margin:10px 0 6px;
+        font-size:8px;
+    }
+
+    .teamGrid{
+        grid-template-columns:repeat(3,1fr);
+        gap:5px;
+    }
+
+    .teamCard{
+        min-height:67px;
+
+        padding:6px 3px;
+
+        border-radius:8px;
+    }
+
+    .teamBadge{
+        width:27px;
+        height:27px;
+        font-size:6px;
+    }
+
+    .teamName{
+        margin-top:5px;
+        font-size:7px;
+    }
+
+    #startMatch{
+        height:44px;
+        margin-top:13px;
+
+        font-size:9px;
+    }
+}
+
+/* =========================================================
+   VERY SMALL PHONES
+========================================================= */
+
+@media(max-width:390px){
+
+    .scoreBox{
+        width:177px;
+    }
+
+    .scoreTeam{
+        grid-template-columns:35px 1fr 27px;
+    }
+
+    .slot{
+        width:11px;
+    }
+
+    #centerInfo{
+        min-width:105px;
+    }
+
+    #centerInfo small{
+        display:none;
+    }
+
+    .smallBtn{
+        padding:0 6px;
+    }
+
+    .zoneGrid{
+        grid-template-columns:repeat(3,57px);
+    }
+
+    .zone{
+        height:32px;
+        font-size:6px;
+    }
+
+    .powerWrap{
+        width:190px;
+    }
+
+    #shootBtn{
+        width:140px;
+    }
+}
+
+/* =========================================================
+   LANDSCAPE MOBILE
+========================================================= */
+
+@media(max-height:500px) and (orientation:landscape){
+
+    #gameFrame{
+        width:100vw;
+        height:100vh;
+    }
+
+    #shootControls{
+        transform:
+            translateX(-50%)
+            scale(.78);
+
+        transform-origin:
+            center bottom;
+
+        bottom:3px;
+    }
+
+    #defendControls{
+        transform:
+            translateX(-50%)
+            scale(.82);
+
+        transform-origin:
+            center bottom;
+
+        bottom:4px;
+    }
+
+    #statusBox{
+        top:50px;
+
+        transform:
+            translateX(-50%)
+            scale(.8);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="app">
+
+<div id="gameFrame">
+
+<canvas id="game"></canvas>
+
+<!-- ======================================================
+     TEAM SELECTION
+====================================================== -->
+
+<div id="teamScreen">
+
+<div class="teamPanel">
+
+<div class="gameTitle">
+    ISL PENALTY SHOOTOUT
+</div>
+
+<div class="gameSubtitle">
+    SELECT YOUR TEAM AND OPPONENT
+</div>
+
+<div class="selectionTitle">
+    YOUR TEAM
+</div>
+
+<div class="teamGrid" id="yourTeams"></div>
+
+<div class="selectionTitle">
+    OPPONENT
+</div>
+
+<div class="teamGrid" id="opponentTeams"></div>
+
+<button id="startMatch" disabled>
+    START MATCH
+</button>
+
+</div>
+</div>
+
+<!-- ======================================================
+     HUD
+====================================================== -->
+
+<div id="topHUD">
+
+<div class="scoreBox">
+
+<div class="scoreTeam">
+    <div class="scoreName" id="yourName">YOU</div>
+    <div class="scoreSlots" id="yourSlots"></div>
+    <div class="scoreNumber" id="yourScore">0</div>
+</div>
+
+<div class="scoreTeam">
+    <div class="scoreName" id="oppName">CPU</div>
+    <div class="scoreSlots" id="oppSlots"></div>
+    <div class="scoreNumber" id="oppScore">0</div>
+</div>
+
+</div>
+
+<div id="centerInfo">
+
+    <small>ISL PENALTY SHOOTOUT</small>
+
+    <strong>
+        ROUND <span id="round">1</span> /
+        <span id="maxRound">5</span>
+    </strong>
+
+</div>
+
+<div id="gameButtons">
+
+    <button class="smallBtn" id="changeTeams">
+        TEAMS
+    </button>
+
+    <button class="smallBtn" id="resetBtn">
+        RESET
+    </button>
+
+</div>
+
+</div>
+
+<!-- ======================================================
+     STATUS
+====================================================== -->
+
+<div id="statusBox">
+
+    <div id="statusMain">
+        SELECT TEAMS
+    </div>
+
+    <div id="statusSub">
+        Choose your team and opponent
+    </div>
+
+</div>
+
+<!-- ======================================================
+     DIFFICULTY
+====================================================== -->
+
+<div id="difficultyBox">
+
+    <span>DIFFICULTY</span>
+
+    <select id="difficulty">
+
+        <option value="easy">
+            EASY
+        </option>
+
+        <option value="medium" selected>
+            MEDIUM
+        </option>
+
+        <option value="hard">
+            HARD
+        </option>
+
+    </select>
+
+</div>
+
+<!-- ======================================================
+     SHOOT CONTROLS
+====================================================== -->
+
+<div id="shootControls">
+
+<div class="zoneGrid">
+
+<button class="zone"
+        data-x="-2.75"
+        data-z="2.05">
+    ↖ HIGH
+</button>
+
+<button class="zone"
+        data-x="0"
+        data-z="2.05">
+    ↑ HIGH
+</button>
+
+<button class="zone"
+        data-x="2.75"
+        data-z="2.05">
+    ↗ HIGH
+</button>
+
+<button class="zone"
+        data-x="-2.75"
+        data-z="1.20">
+    ← MID
+</button>
+
+<button class="zone selected"
+        data-x="0"
+        data-z="1.20">
+    CENTER
+</button>
+
+<button class="zone"
+        data-x="2.75"
+        data-z="1.20">
+    MID →
+</button>
+
+<button class="zone"
+        data-x="-2.75"
+        data-z=".32">
+    ↙ LOW
+</button>
+
+<button class="zone"
+        data-x="0"
+        data-z=".32">
+    ↓ LOW
+</button>
+
+<button class="zone"
+        data-x="2.75"
+        data-z=".32">
+    ↘ LOW
+</button>
+
+</div>
+
+<div class="powerWrap">
+
+<input
+    id="power"
+    type="range"
+    min="40"
+    max="100"
+    value="76">
+
+</div>
+
+<button id="shootBtn">
+    SHOOT
+</button>
+
+</div>
+
+<!-- ======================================================
+     DEFENSE CONTROLS
+====================================================== -->
+
+<div id="defendControls">
+
+<button class="diveBtn" data-dir="-1">
+    ← LEFT
+</button>
+
+<button class="diveBtn center" data-dir="0">
+    CENTER
+</button>
+
+<button class="diveBtn" data-dir="1">
+    RIGHT →
+</button>
+
+</div>
+
+</div>
+</div>
+
+
 <script>
-'use strict';
-const c=document.getElementById('game'),x=c.getContext('2d'),$=id=>document.getElementById(id),cl=(v,a,b)=>Math.max(a,Math.min(b,v)),lerp=(a,b,t)=>a+(b-a)*t,ease=t=>1-(1-t)**3,rand=(a,b)=>a+Math.random()*(b-a);let vw=1,vh=1,mob=false,port=false;
-function resize(){const r=c.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);vw=r.width;vh=r.height;mob=innerWidth<=700;port=mob&&vh>vw;c.width=r.width*d;c.height=r.height*d;x.setTransform(d,0,0,d,0,0)}addEventListener('resize',resize);addEventListener('orientationchange',()=>setTimeout(resize,100));resize();
-const T={kbfc:['Kerala Blasters','KBFC','#f4c400','#123d91','KB'],mbsg:['Mohun Bagan','MBSG','#008f52','#7b173d','MB'],mumbai:['Mumbai City','MCFC','#65c4e8','#123c73','MC'],bengaluru:['Bengaluru FC','BFC','#0871c9','#e8edf1','BFC'],eastbengal:['East Bengal','EBFC','#df332f','#f3c300','EB'],goa:['FC Goa','FCG','#e66d16','#243b8c','GOA'],chennaiyin:['Chennaiyin FC','CFC','#087bb9','#102f61','CFC'],hyderabad:['Hyderabad FC','HFC','#f4a900','#171717','HFC'],odisha:['Odisha FC','OFC','#241b78','#e33d43','OFC'],jamshedpur:['Jamshedpur FC','JFC','#d71920','#102b55','JFC'],northeast:['NorthEast United','NEUFC','#e9b51d','#15285d','NEU'],punjab:['Punjab FC','PFC','#ed2939','#f2b300','PFC']};let sy=null,so=null;
-function cards(){for(const [id,t] of Object.entries(T)){['your','opponent'].forEach(type=>{const b=document.createElement('button');b.className='team';b.innerHTML=`<div class="badge" style="background:${t[2]};color:${t[3]};border-color:${t[3]}">${t[4]}</div><div class="tn">${t[0]}</div>`;b.onclick=()=>{if(type==='your'){sy=id;document.querySelectorAll('#your .team').forEach(a=>a.classList.remove('selected'))}else{so=id;document.querySelectorAll('#opponent .team').forEach(a=>a.classList.remove('selected'))}b.classList.add('selected');$('start').disabled=!sy||!so||sy===so};$(type).appendChild(b)})}}cards();
-const G={active:false,phase:'select',round:1,max:5,ys:0,os:0,yt:false,ot:false,sudden:false,ytm:null,otm:null,diff:'medium'},D={easy:{reaction:.48,center:.7,dive:1.3,error:.65},medium:{reaction:.31,center:.62,dive:1.75,error:.42},hard:{reaction:.16,center:.52,dive:2.15,error:.25}},B={active:false,owner:null,x:0,z:.12,tx:0,tz:1.2,start:0,dur:1,trail:[]},K={x:0,start:0,target:0,dir:0,active:false,time:0,dur:.4};let zone={x:0,z:1.2};
-function st(a,b=''){ $('sm').textContent=a;$('ss').textContent=b }function scoreSlots(){ $('ys').innerHTML='';$('os').innerHTML='';for(let i=0;i<G.max;i++){let a=document.createElement('span'),b=document.createElement('span');a.className=b.className='slot';$('ys').append(a);$('os').append(b)}}function hud(){ $('yn').textContent=G.ytm?G.ytm[1]:'YOU';$('on').textContent=G.otm?G.otm[1]:'CPU';$('ysc').textContent=G.ys;$('osc').textContent=G.os;$('r').textContent=G.round;$('mr').textContent=G.max }function slots(team,res,i){let q=$(team==='y'?'ys':'os').children[i];if(q)q.className='slot '+res}function show(a,b){$(a).style.display=b?'flex':'none'}
-function resetState(){G.phase='select';G.round=1;G.max=5;G.ys=G.os=0;G.yt=G.ot=false;G.sudden=false;B.active=false;K.active=false;scoreSlots();hud()}
-$('start').onclick=()=>{if(!sy||!so||sy===so)return;G.ytm=T[sy];G.otm=T[so];document.documentElement.style.setProperty('--a',G.ytm[2]);document.documentElement.style.setProperty('--b',G.ytm[3]);$('teams').style.display='none';$('diff').style.display='flex';resetState();G.active=true;yourPenalty()};
-$('teamsBtn').onclick=()=>{G.active=false;show('shoot',false);show('defend',false);$('diff').style.display='none';$('teams').style.display='flex';st('SELECT TEAMS','Choose your team and opponent')};$('reset').onclick=()=>{if(!G.ytm){$('teamsBtn').click();return}resetState();G.active=true;yourPenalty()};$('difficulty').onchange=()=>{G.diff=$('difficulty').value;if(G.active)st('DIFFICULTY UPDATED','Keeper AI adjusted for the next shot')};
-function yourPenalty(){G.phase='shoot';B.active=false;K.x=0;K.active=false;show('shoot',true);show('defend',false);st('YOUR PENALTY','Aim for a corner and choose power');select(document.querySelector('.zone[data-x="0"][data-z="1.2"]'))}
-function select(b){if(!b)return;document.querySelectorAll('.zone').forEach(q=>q.classList.remove('sel'));b.classList.add('sel');zone={x:+b.dataset.x,z:+b.dataset.z}}document.querySelectorAll('.zone').forEach(b=>b.onclick=()=>select(b));$('kick').onclick=()=>{if(G.active&&G.phase==='shoot'&&!B.active)shoot(zone.x,zone.z,+$('power').value,'you')};
-function shoot(tx,tz,pow,owner){if(B.active)return;let d=D[G.diff],err=owner==='you'?.035+(100-pow)*.001:.1;B={active:true,owner,x:0,z:.12,tx:cl(tx+rand(-err,err),-3.75,3.75),tz:cl(tz+rand(-err,err),.05,2.4),start:performance.now(),dur:10.8/(19+pow*.115),trail:[]};if(pow>88)B.dur*=.91;G.phase=owner==='you'?'playerFlight':'cpuFlight';show('shoot',false);show('defend',false);if(owner==='you'){st('SHOT!',G.otm[0]+' goalkeeper reacts...');cpuKeeper()}else st('CPU SHOOTS!','Your goalkeeper is diving...')}
-function cpuKeeper(){let d=D[G.diff],p=rand(-d.error,d.error);if(G.diff==='hard')p*=.55;K.start=0;K.x=0;K.target=cl(B.tx+p,-3.35,3.35);K.dir=K.target<-.55?-1:K.target>.55?1:0;K.time=performance.now()+d.reaction*1000;K.dur=.42;K.active=true}
-function defense(){G.phase='defend';B.active=false;K.x=K.start=K.target=0;K.active=false;show('shoot',false);show('defend',true);st(G.otm[1]+' PENALTY','Choose LEFT, CENTER or RIGHT');setTimeout(()=>{if(G.active&&G.phase==='defend')dive(0)},2600)}document.querySelectorAll('.dive').forEach(b=>b.onclick=()=>dive(+b.dataset.d));
-function dive(dir){if(!G.active||G.phase!=='defend')return;K.dir=dir;K.start=K.x;K.target=dir<0?-3.15:dir>0?3.15:0;K.time=performance.now();K.dur=dir? .43:.28;K.active=true;show('defend',false);st(dir<0?'DIVING LEFT':dir>0?'DIVING RIGHT':'STAYING CENTER','Read the striker...');setTimeout(()=>{if(G.active&&G.phase==='defend')cpuShoot()},210)}
-function cpuShoot(){if(!G.active||G.phase!=='defend')return;let r=Math.random(),tx=r<.32?rand(-3.25,-2.15):r<.64?rand(2.15,3.25):r<.82?rand(-.65,.65):rand(-2.8,2.8),tz=Math.random()<.3?rand(1.75,2.3):rand(.3,1.55),p=rand(67,96);if(G.diff==='easy'){tx+=rand(-.55,.55);tz+=rand(-.25,.25)}if(G.diff==='hard'){tx+=rand(-.12,.12);tz+=rand(-.08,.08)}shoot(tx,tz,p,'cpu')}
-function update(now){if(B.active){let t=cl((now-B.start)/(1000*B.dur),0,1);B.x=lerp(0,B.tx,ease(t));B.z=lerp(.12,B.tz,t)+Math.sin(Math.PI*t)*.62;let p=ballPos(t);B.trail.push(p);if(B.trail.length>13)B.trail.shift();if(t>=1){B.active=false;resolve()}}if(K.active){if(B.owner==='you'&&now<K.time)return;let t=cl((now-K.time)/(1000*K.dur),0,1);K.x=lerp(K.start,K.target,ease(t));if(t>=1)K.active=false}}
-function resolve(){let x=B.tx,z=B.tz;if(x<-3.66||x>3.66||z<0||z>2.44)return finish(false,x<-3.66||x>3.66?'WIDE!':'OVER THE BAR!');let d=D[G.diff],dist=Math.abs(x-K.x),reach=K.dir===0?d.center:d.dive;if(K.dir===-1&&x>-.45)reach=.16;if(K.dir===1&&x<.45)reach=.16;if(K.dir===0&&Math.abs(x)>1.05)reach=.12;if(z>1.65)reach*=.72;if(z<.48)reach*=.86;finish(!(dist<=reach),dist<=reach?(B.owner==='you'?'SAVED!':'GREAT SAVE!'):(B.owner==='you'?'GOAL!':'CPU SCORES!'))}
-function finish(goal,msg){let i=G.round-1;if(B.owner==='you'){if(goal){G.ys++;slots('y','goal',i)}else slots('y','miss',i);G.yt=true}else{if(goal){G.os++;slots('o','goal',i)}else slots('o','miss',i);G.ot=true}hud();st(msg,`${G.ytm[1]} ${G.ys} - ${G.os} ${G.otm[1]}`);setTimeout(next,1150)}
-function next(){B.active=K.active=false;if(G.yt&&!G.ot)return defense();if(G.yt&&G.ot){if(G.round>=G.max&&G.ys!==G.os)return end();if(G.round>=G.max&&G.ys===G.os){G.sudden=true;G.max++}G.round++;G.yt=G.ot=false;if($('ys').children.length<G.max){$('ys').append(Object.assign(document.createElement('span'),{className:'slot'}));$('os').append(Object.assign(document.createElement('span'),{className:'slot'}))}hud();if(G.sudden)st('SUDDEN DEATH','One penalty each — winner takes it');yourPenalty()}}
-function end(){G.active=false;show('shoot',false);show('defend',false);st(G.ys>G.os?G.ytm[0].toUpperCase()+' WIN!':G.otm[0].toUpperCase()+' WIN!',`${G.ys} - ${G.os} • RESET TO PLAY AGAIN`)}
-/* camera */
-function gx(wx){if(port)return vw/2+wx*vw*.10;return vw/2+wx*vw*.05}function gy(wz){if(port)return vh*.345-wz*vh*.105;return vh*.351-wz*vh*.08}function ballPos(t){if(port)return{x:vw/2+B.x*lerp(vw*.23,vw*.10,t),y:lerp(vh*.79,vh*.345,t)-B.z*vh*.105};return{x:vw/2+B.x*lerp(vw*.119,vw*.05,t),y:lerp(vh*.694,vh*.351,t)-B.z*vh*.08}}
-function stadium(){let w=vw,h=vh,g=x.createLinearGradient(0,0,0,port?h*.4:h*.37);g.addColorStop(0,'#08131c');g.addColorStop(.45,'#233943');g.addColorStop(1,'#111c20');x.fillStyle=g;x.fillRect(0,0,w,h);x.fillStyle='#0b1115';x.fillRect(0,port?h*.15:h*.15,w,port?h*.20:h*.12);let rows=port?10:7,cols=Math.ceil(w/(port?11:17));for(let r=0;r<rows;r++)for(let i=0;i<cols;i++){let xx=i*(port?11:17)+(r%2)*(port?5:8),yy=(port?h*.16:h*.17)+r*(port?h*.018:h*.016),s=42+((i*17+r*13)%24);x.fillStyle=`rgb(${s},${s+5},${s+8})`;x.fillRect(xx,yy,port?5:7,port?3:5)}[.1,.3,.7,.9].forEach((p,i)=>{let xx=w*p,yy=h*.105;x.fillStyle='#fffef0';x.beginPath();x.arc(xx,yy,4,0,Math.PI*2);x.fill();x.fillStyle='#fffed010';x.beginPath();x.moveTo(xx-7,yy+5);x.lineTo(xx+7,yy+5);x.lineTo(xx+55,h*.34);x.lineTo(xx-55,h*.34);x.closePath();x.fill()});x.fillStyle='#101b20';x.fillRect(0,port?h*.345:h*.305,w,port?h*.07:h*.05);for(let i=0;i<9;i++){x.fillStyle=i%2?'#17252a':'#26353b';x.fillRect(i*w/9,h*(port?.353:.31),w/9-4,h*(port?.048:.035))}}
-function pitch(){let w=vw,h=vh,top=port?h*.39:h*.37,g=x.createLinearGradient(0,top,0,h);g.addColorStop(0,'#2f8b43');g.addColorStop(.5,'#176a31');g.addColorStop(1,'#0a3d20');x.fillStyle=g;x.fillRect(0,top,w,h-top);let sh=port?h*.045:h*.043;for(let y=top,i=0;y<h;y+=sh,i++){x.fillStyle=i%2?'#0000000b':'#ffffff06';x.fillRect(0,y,w,sh)}x.strokeStyle='#ffffffa6';x.lineWidth=port?1.5:2;if(port){let L=gx(-3.66),R=gx(3.66),Y=gy(0);x.beginPath();x.moveTo(L,Y);x.lineTo(R,Y);x.lineTo(w*.92,h*1.03);x.moveTo(L,Y);x.lineTo(w*.08,h*1.03);x.stroke();x.strokeStyle='#ffffff66';x.beginPath();x.moveTo(w*.32,Y);x.lineTo(w*.68,Y);x.lineTo(w*.74,h*.52);x.lineTo(w*.26,h*.52);x.closePath();x.stroke();x.fillStyle='#fff';x.beginPath();x.arc(w/2,h*.77,3.5,0,Math.PI*2);x.fill()}else{x.beginPath();x.moveTo(w*.24,h*.35);x.lineTo(w*.76,h*.35);x.lineTo(w*.84,h);x.moveTo(w*.24,h*.35);x.lineTo(w*.16,h);x.stroke();x.strokeStyle='#ffffff66';x.beginPath();x.moveTo(w*.37,h*.35);x.lineTo(w*.63,h*.35);x.lineTo(w*.66,h*.49);x.lineTo(w*.34,h*.49);x.closePath();x.stroke();x.fillStyle='#fff';x.beginPath();x.arc(w/2,h*.694,4,0,Math.PI*2);x.fill()}}
-function goal(){let L=gx(-3.66),R=gx(3.66),Y=gy(2.44),Btm=gy(0);x.strokeStyle='#ffffff3d';x.lineWidth=1;for(let xx=L;xx<=R;xx+=port?12:16){x.beginPath();x.moveTo(xx,Y);x.lineTo(xx,Btm);x.stroke()}for(let yy=Y;yy<=Btm;yy+=port?10:13){x.beginPath();x.moveTo(L,yy);x.lineTo(R,yy);x.stroke()}x.strokeStyle='#f3f5f6';x.lineWidth=port?5:7;x.lineCap='round';x.beginPath();x.moveTo(L,Btm);x.lineTo(L,Y);x.lineTo(R,Y);x.lineTo(R,Btm);x.stroke()}
-function player(){if(!G.ytm)return;let t=B.owner==='cpu'?G.otm:G.ytm,sc=port?Math.min(vw/390,1):1,px=vw/2,py=port?vh*.805:vh*.71;x.save();x.translate(px,py);x.scale(sc,sc);x.fillStyle='#0007';x.beginPath();x.ellipse(0,49,30,7,0,0,Math.PI*2);x.fill();x.fillStyle='#111923';x.fillRect(-14,18,11,37);x.fillRect(3,18,11,37);x.fillStyle='#090b0d';x.fillRect(-18,49,18,7);x.fillRect(1,49,18,7);x.fillStyle=t[2];x.beginPath();x.roundRect(-23,-36,46,60,7);x.fill();x.fillStyle=t[3];x.fillRect(-4,-36,8,60);x.strokeStyle=t[2];x.lineWidth=12;x.lineCap='round';x.beginPath();x.moveTo(-20,-22);x.lineTo(-39,3);x.moveTo(20,-22);x.lineTo(39,3);x.stroke();x.fillStyle='#9b6954';x.beginPath();x.arc(0,-52,16,0,Math.PI*2);x.fill();x.fillStyle='#171719';x.beginPath();x.arc(0,-58,16,Math.PI,Math.PI*2);x.fill();x.restore()}
-function keeper(){let t=G.ytm&&(G.phase==='defend'||B.owner==='cpu')?G.ytm:G.otm;if(!t)return;let sc=port?Math.min(vw/390,1):1,px=gx(K.x),py=port?gy(0)+vh*.012:vh*.351;x.save();x.translate(px,py);x.scale(sc,sc);let lean=cl((K.target-K.start)/3,-1,1);if(K.active)x.rotate(lean*.25);x.fillStyle='#0008';x.beginPath();x.ellipse(0,65,38+Math.abs(lean)*30,8,0,0,Math.PI*2);x.fill();x.fillStyle=t[3];x.fillRect(-18,20,13,43);x.fillRect(5,20,13,43);x.fillStyle=t[2];x.beginPath();x.roundRect(-26,-43,52,70,8);x.fill();x.fillStyle=t[3];x.fillRect(-4,-43,8,70);let st=31+Math.abs(lean)*45;x.strokeStyle=t[2];x.lineWidth=14;x.lineCap='round';x.beginPath();x.moveTo(-21,-27);x.lineTo(lean<0?-st:-31,-17);x.moveTo(21,-27);x.lineTo(lean>0?st:31,-17);x.stroke();x.fillStyle='#f2f4f4';x.beginPath();x.arc(lean<0?-st:-31,-17,9,0,Math.PI*2);x.arc(lean>0?st:31,-17,9,0,Math.PI*2);x.fill();x.fillStyle='#a96f56';x.beginPath();x.arc(0,-61,17,0,Math.PI*2);x.fill();x.fillStyle='#151719';x.beginPath();x.arc(0,-67,17,Math.PI,Math.PI*2);x.fill();x.restore()}
-function ball(){if(!B.active)return;B.trail.forEach((p,i)=>{x.fillStyle=`rgba(255,255,255,${i/B.trail.length*.22})`;x.beginPath();x.arc(p.x,p.y,4,0,Math.PI*2);x.fill()});let t=cl((performance.now()-B.start)/(1000*B.dur),0,1),p=ballPos(t),r=port?lerp(14,6,t):lerp(16,7,t);x.fillStyle='#0008';x.beginPath();x.ellipse(p.x,p.y+8,r*1.2,r*.34,0,0,Math.PI*2);x.fill();let g=x.createRadialGradient(p.x-r*.3,p.y-r*.35,1,p.x,p.y,r);g.addColorStop(0,'#fff');g.addColorStop(.7,'#e5e8e9');g.addColorStop(1,'#8b9499');x.fillStyle=g;x.beginPath();x.arc(p.x,p.y,r,0,Math.PI*2);x.fill()}
-function target(){if(G.phase!=='shoot')return;let px=gx(zone.x),py=gy(zone.z),r=port?14:18;x.strokeStyle=G.ytm?G.ytm[2]:'#ffd43b';x.lineWidth=2.5;x.shadowColor=x.strokeStyle;x.shadowBlur=12;x.beginPath();x.arc(px,py,r,0,Math.PI*2);x.stroke();x.shadowBlur=0;x.beginPath();x.moveTo(px-r-5,py);x.lineTo(px+r+5,py);x.moveTo(px,py-r-5);x.lineTo(px,py+r+5);x.stroke()}
-function vignette(){let g=x.createRadialGradient(vw/2,vh*.48,Math.min(vw,vh)*.25,vw/2,vh*.48,Math.max(vw,vh)*.72);g.addColorStop(0,'#0000');g.addColorStop(1,'#00000066');x.fillStyle=g;x.fillRect(0,0,vw,vh)}
-function draw(){x.clearRect(0,0,vw,vh);stadium();pitch();goal();player();keeper();target();ball();vignette()}
-function loop(t){update(t);draw();requestAnimationFrame(loop)}requestAnimationFrame(loop);scoreSlots();hud();st('SELECT TEAMS','Choose your team and opponent');
-</script></body></html>
+"use strict";
+
+/* =========================================================
+   CANVAS
+========================================================= */
+
+const canvas =
+    document.getElementById("game");
+
+const ctx =
+    canvas.getContext("2d");
+
+let W = 1280;
+let H = 720;
+
+function resizeCanvas(){
+
+    const rect =
+        canvas.parentElement.getBoundingClientRect();
+
+    const dpr =
+        Math.min(
+            window.devicePixelRatio || 1,
+            2
+        );
+
+    W = Math.max(1,rect.width);
+    H = Math.max(1,rect.height);
+
+    canvas.width =
+        Math.round(W*dpr);
+
+    canvas.height =
+        Math.round(H*dpr);
+
+    canvas.style.width =
+        W+"px";
+
+    canvas.style.height =
+        H+"px";
+
+    ctx.setTransform(
+        dpr,
+        0,
+        0,
+        dpr,
+        0,
+        0
+    );
+}
+
+window.addEventListener(
+    "resize",
+    resizeCanvas
+);
+
+window.addEventListener(
+    "orientationchange",
+    ()=>{
+        setTimeout(
+            resizeCanvas,
+            120
+        );
+    }
+);
+
+resizeCanvas();
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+const $ =
+    id => document.getElementById(id);
+
+const clamp =
+    (v,min,max)=>
+        Math.max(
+            min,
+            Math.min(max,v)
+        );
+
+const lerp =
+    (a,b,t)=>
+        a+(b-a)*t;
+
+const easeOut =
+    t =>
+        1-Math.pow(1-t,3);
+
+const rand =
+    (a,b)=>
+        a+Math.random()*(b-a);
+
+const isMobile =
+    () =>
+        W < 700;
+
+
+/* =========================================================
+   TEAMS
+========================================================= */
+
+const TEAMS = {
+
+    kbfc:{
+        name:"Kerala Blasters",
+        short:"KBFC",
+        primary:"#f4c400",
+        secondary:"#123d91",
+        badge:"KB"
+    },
+
+    mbsg:{
+        name:"Mohun Bagan",
+        short:"MBSG",
+        primary:"#008f52",
+        secondary:"#7b173d",
+        badge:"MB"
+    },
+
+    mumbai:{
+        name:"Mumbai City",
+        short:"MCFC",
+        primary:"#65c4e8",
+        secondary:"#123c73",
+        badge:"MC"
+    },
+
+    bengaluru:{
+        name:"Bengaluru FC",
+        short:"BFC",
+        primary:"#0871c9",
+        secondary:"#e8edf1",
+        badge:"BFC"
+    },
+
+    eastbengal:{
+        name:"East Bengal",
+        short:"EBFC",
+        primary:"#df332f",
+        secondary:"#f3c300",
+        badge:"EB"
+    },
+
+    goa:{
+        name:"FC Goa",
+        short:"FCG",
+        primary:"#e66d16",
+        secondary:"#243b8c",
+        badge:"GOA"
+    },
+
+    chennaiyin:{
+        name:"Chennaiyin FC",
+        short:"CFC",
+        primary:"#087bb9",
+        secondary:"#102f61",
+        badge:"CFC"
+    },
+
+    hyderabad:{
+        name:"Hyderabad FC",
+        short:"HFC",
+        primary:"#f4a900",
+        secondary:"#171717",
+        badge:"HFC"
+    },
+
+    odisha:{
+        name:"Odisha FC",
+        short:"OFC",
+        primary:"#241b78",
+        secondary:"#e33d43",
+        badge:"OFC"
+    },
+
+    jamshedpur:{
+        name:"Jamshedpur FC",
+        short:"JFC",
+        primary:"#d71920",
+        secondary:"#102b55",
+        badge:"JFC"
+    },
+
+    northeast:{
+        name:"NorthEast United",
+        short:"NEUFC",
+        primary:"#e9b51d",
+        secondary:"#15285d",
+        badge:"NEU"
+    },
+
+    punjab:{
+        name:"Punjab FC",
+        short:"PFC",
+        primary:"#ed2939",
+        secondary:"#f2b300",
+        badge:"PFC"
+    }
+};
+
+let selectedYour = null;
+let selectedOpponent = null;
+
+
+/* =========================================================
+   TEAM SELECTION
+========================================================= */
+
+function createTeamCards(){
+
+    $("yourTeams").innerHTML="";
+    $("opponentTeams").innerHTML="";
+
+    Object.entries(TEAMS)
+    .forEach(
+        ([id,team])=>{
+
+            $("yourTeams")
+                .appendChild(
+                    createTeamCard(
+                        id,
+                        team,
+                        "your"
+                    )
+                );
+
+            $("opponentTeams")
+                .appendChild(
+                    createTeamCard(
+                        id,
+                        team,
+                        "opponent"
+                    )
+                );
+        }
+    );
+}
+
+function createTeamCard(
+    id,
+    team,
+    type
+){
+
+    const button =
+        document.createElement("button");
+
+    button.className="teamCard";
+
+    button.innerHTML=`
+
+        <div
+            class="teamBadge"
+            style="
+                background:${team.primary};
+                color:${team.secondary};
+                border-color:${team.secondary};
+            ">
+            ${team.badge}
+        </div>
+
+        <div class="teamName">
+            ${team.name}
+        </div>
+    `;
+
+    button.onclick=()=>{
+
+        if(type==="your"){
+
+            selectedYour=id;
+
+            document
+                .querySelectorAll(
+                    "#yourTeams .teamCard"
+                )
+                .forEach(
+                    x =>
+                        x.classList.remove(
+                            "selected"
+                        )
+                );
+
+        }else{
+
+            selectedOpponent=id;
+
+            document
+                .querySelectorAll(
+                    "#opponentTeams .teamCard"
+                )
+                .forEach(
+                    x =>
+                        x.classList.remove(
+                            "selected"
+                        )
+                );
+        }
+
+        button.classList.add("selected");
+
+        $("startMatch").disabled =
+            !selectedYour ||
+            !selectedOpponent ||
+            selectedYour===selectedOpponent;
+    };
+
+    return button;
+}
+
+createTeamCards();
+
+
+/* =========================================================
+   GAME STATE
+========================================================= */
+
+const game={
+
+    active:false,
+
+    phase:"selection",
+
+    round:1,
+
+    maxRounds:5,
+
+    yourScore:0,
+
+    opponentScore:0,
+
+    yourTaken:false,
+
+    opponentTaken:false,
+
+    suddenDeath:false,
+
+    yourTeam:null,
+
+    opponentTeam:null,
+
+    difficulty:"medium"
+};
+
+
+/* =========================================================
+   DIFFICULTY
+========================================================= */
+
+const DIFFICULTY={
+
+    easy:{
+        reaction:.48,
+        sideReach:.70,
+        centerReach:.82,
+        diveReach:1.45,
+        error:.65
+    },
+
+    medium:{
+        reaction:.30,
+        sideReach:.52,
+        centerReach:.66,
+        diveReach:1.75,
+        error:.42
+    },
+
+    hard:{
+        reaction:.15,
+        sideReach:.40,
+        centerReach:.55,
+        diveReach:2.10,
+        error:.25
+    }
+};
+
+
+/* =========================================================
+   BALL
+========================================================= */
+
+const ball={
+
+    active:false,
+
+    owner:null,
+
+    x:0,
+
+    z:.12,
+
+    targetX:0,
+
+    targetZ:1.2,
+
+    startTime:0,
+
+    duration:1,
+
+    trail:[]
+};
+
+
+/* =========================================================
+   KEEPER
+========================================================= */
+
+const keeper={
+
+    x:0,
+
+    startX:0,
+
+    targetX:0,
+
+    direction:0,
+
+    active:false,
+
+    startTime:0,
+
+    duration:.4
+};
+
+
+/* =========================================================
+   SELECTED SHOT
+========================================================= */
+
+let selectedZone={
+
+    x:0,
+
+    z:1.2
+};
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+function status(
+    main,
+    sub=""
+){
+
+    $("statusMain").textContent=main;
+
+    $("statusSub").textContent=sub;
+}
+
+function showShootControls(show){
+
+    $("shootControls").style.display =
+        show ? "flex" : "none";
+}
+
+function showDefendControls(show){
+
+    $("defendControls").style.display =
+        show ? "flex" : "none";
+}
+
+
+/* =========================================================
+   SCOREBOARD
+========================================================= */
+
+function setupScoreSlots(){
+
+    $("yourSlots").innerHTML="";
+    $("oppSlots").innerHTML="";
+
+    for(
+        let i=0;
+        i<game.maxRounds;
+        i++
+    ){
+
+        $("yourSlots")
+            .appendChild(
+                document.createElement("span")
+            );
+
+        $("oppSlots")
+            .appendChild(
+                document.createElement("span")
+            );
+
+        $("yourSlots")
+            .lastChild
+            .className="slot";
+
+        $("oppSlots")
+            .lastChild
+            .className="slot";
+    }
+}
+
+function updateScoreboard(){
+
+    $("yourName").textContent =
+        game.yourTeam
+            ? game.yourTeam.short
+            : "YOU";
+
+    $("oppName").textContent =
+        game.opponentTeam
+            ? game.opponentTeam.short
+            : "CPU";
+
+    $("yourScore").textContent =
+        game.yourScore;
+
+    $("oppScore").textContent =
+        game.opponentScore;
+
+    $("round").textContent =
+        game.round;
+
+    $("maxRound").textContent =
+        game.maxRounds;
+}
+
+function markSlot(
+    team,
+    result,
+    index
+){
+
+    const container =
+        team==="you"
+            ? $("yourSlots")
+            : $("oppSlots");
+
+    const slot =
+        container.children[index];
+
+    if(slot){
+
+        slot.className =
+            "slot "+result;
+    }
+}
+
+
+/* =========================================================
+   RESET GAME STATE
+========================================================= */
+
+function resetGameState(){
+
+    game.phase="selection";
+
+    game.round=1;
+
+    game.maxRounds=5;
+
+    game.yourScore=0;
+
+    game.opponentScore=0;
+
+    game.yourTaken=false;
+
+    game.opponentTaken=false;
+
+    game.suddenDeath=false;
+
+    ball.active=false;
+
+    keeper.active=false;
+
+    ball.trail=[];
+
+    keeper.x=0;
+
+    setupScoreSlots();
+
+    updateScoreboard();
+}
+
+
+/* =========================================================
+   START MATCH
+========================================================= */
+
+$("startMatch").onclick=()=>{
+
+    if(
+        !selectedYour ||
+        !selectedOpponent ||
+        selectedYour===selectedOpponent
+    )
+        return;
+
+    game.yourTeam =
+        TEAMS[selectedYour];
+
+    game.opponentTeam =
+        TEAMS[selectedOpponent];
+
+    document.documentElement
+        .style
+        .setProperty(
+            "--accent",
+            game.yourTeam.primary
+        );
+
+    document.documentElement
+        .style
+        .setProperty(
+            "--accent2",
+            game.yourTeam.secondary
+        );
+
+    game.difficulty =
+        $("difficulty").value;
+
+    $("teamScreen").style.display="none";
+
+    $("difficultyBox").style.display="flex";
+
+    resetGameState();
+
+    game.active=true;
+
+    startYourPenalty();
+};
+
+
+/* =========================================================
+   RESET / CHANGE
+========================================================= */
+
+function resetAll(){
+
+    game.active=false;
+
+    showShootControls(false);
+
+    showDefendControls(false);
+
+    $("difficultyBox").style.display="none";
+
+    $("teamScreen").style.display="flex";
+
+    status(
+        "SELECT TEAMS",
+        "Choose your team and opponent"
+    );
+}
+
+$("changeTeams").onclick=resetAll;
+
+$("resetBtn").onclick=()=>{
+
+    if(!game.yourTeam){
+
+        resetAll();
+
+        return;
+    }
+
+    resetGameState();
+
+    game.active=true;
+
+    startYourPenalty();
+};
+
+
+/* =========================================================
+   YOUR PENALTY
+========================================================= */
+
+function startYourPenalty(){
+
+    game.phase="shoot";
+
+    ball.active=false;
+
+    keeper.x=0;
+
+    keeper.active=false;
+
+    showShootControls(true);
+
+    showDefendControls(false);
+
+    status(
+        "YOUR PENALTY",
+        "Aim for a corner and choose power"
+    );
+
+    selectZone(
+        document.querySelector(
+            '.zone[data-x="0"][data-z="1.20"]'
+        )
+    );
+}
+
+
+/* =========================================================
+   ZONE SELECTION
+========================================================= */
+
+function selectZone(button){
+
+    if(!button)
+        return;
+
+    document
+        .querySelectorAll(".zone")
+        .forEach(
+            b =>
+                b.classList.remove(
+                    "selected"
+                )
+        );
+
+    button.classList.add("selected");
+
+    selectedZone.x =
+        Number(button.dataset.x);
+
+    selectedZone.z =
+        Number(button.dataset.z);
+}
+
+document
+    .querySelectorAll(".zone")
+    .forEach(
+        button => {
+
+            button.onclick=()=>{
+                selectZone(button);
+            };
+        }
+    );
+
+
+/* =========================================================
+   SHOOT
+========================================================= */
+
+$("shootBtn").onclick=()=>{
+
+    if(
+        !game.active ||
+        game.phase!=="shoot" ||
+        ball.active
+    )
+        return;
+
+    shootBall(
+        selectedZone.x,
+        selectedZone.z,
+        Number($("power").value),
+        "you"
+    );
+};
+
+
+/* =========================================================
+   SHOOT BALL
+========================================================= */
+
+function shootBall(
+    x,
+    z,
+    power,
+    owner
+){
+
+    if(ball.active)
+        return;
+
+    const cfg =
+        DIFFICULTY[game.difficulty];
+
+    ball.active=true;
+
+    ball.owner=owner;
+
+    ball.x=0;
+
+    ball.z=.12;
+
+    let error;
+
+    if(owner==="you"){
+
+        error =
+            .025+
+            (100-power)*.0008;
+
+    }else{
+
+        error =
+            game.difficulty==="easy"
+                ? .22
+                : game.difficulty==="medium"
+                    ? .13
+                    : .08;
+    }
+
+    ball.targetX =
+        clamp(
+            x+
+            rand(
+                -error,
+                error
+            ),
+            -3.8,
+            3.8
+        );
+
+    ball.targetZ =
+        clamp(
+            z+
+            rand(
+                -error,
+                error
+            ),
+            .05,
+            2.4
+        );
+
+    const speed =
+        19+
+        power*.115;
+
+    ball.duration =
+        10.8/speed;
+
+    if(power>88)
+        ball.duration*=.91;
+
+    ball.startTime=
+        performance.now();
+
+    ball.trail=[];
+
+    game.phase =
+        owner==="you"
+            ? "playerFlight"
+            : "cpuFlight";
+
+    showShootControls(false);
+
+    showDefendControls(false);
+
+    if(owner==="you"){
+
+        status(
+            "SHOT!",
+            game.opponentTeam.name+
+            " goalkeeper reacts..."
+        );
+
+        startCPUKeeper();
+
+    }else{
+
+        status(
+            "CPU SHOOTS!",
+            "Your goalkeeper is diving..."
+        );
+    }
+}
+
+
+/* =========================================================
+   CPU KEEPER
+========================================================= */
+
+function startCPUKeeper(){
+
+    const cfg =
+        DIFFICULTY[game.difficulty];
+
+    let prediction =
+        rand(
+            -cfg.error,
+            cfg.error
+        );
+
+    keeper.startX=0;
+
+    keeper.x=0;
+
+    keeper.targetX =
+        clamp(
+            ball.targetX+
+            prediction,
+            -3.35,
+            3.35
+        );
+
+    if(keeper.targetX<-.55)
+        keeper.direction=-1;
+    else if(keeper.targetX>.55)
+        keeper.direction=1;
+    else
+        keeper.direction=0;
+
+    keeper.startTime =
+        performance.now()+
+        cfg.reaction*1000;
+
+    keeper.duration=.42;
+
+    keeper.active=true;
+}
+
+
+/* =========================================================
+   DEFENSE
+========================================================= */
+
+function beginDefense(){
+
+    game.phase="defend";
+
+    ball.active=false;
+
+    keeper.x=0;
+
+    keeper.targetX=0;
+
+    keeper.active=false;
+
+    showShootControls(false);
+
+    showDefendControls(true);
+
+    status(
+        game.opponentTeam.short+
+        " PENALTY",
+        "Choose LEFT, CENTER or RIGHT"
+    );
+
+    setTimeout(
+        ()=>{
+            if(
+                game.active &&
+                game.phase==="defend"
+            ){
+                chooseDive(0);
+            }
+        },
+        3000
+    );
+}
+
+document
+    .querySelectorAll(".diveBtn")
+    .forEach(
+        button => {
+
+            button.onclick=()=>{
+                chooseDive(
+                    Number(
+                        button.dataset.dir
+                    )
+                );
+            };
+        }
+    );
+
+
+/* =========================================================
+   CHOOSE DIVE
+========================================================= */
+
+function chooseDive(direction){
+
+    if(
+        !game.active ||
+        game.phase!=="defend"
+    )
+        return;
+
+    keeper.direction=direction;
+
+    keeper.startX=keeper.x;
+
+    keeper.targetX =
+        direction===-1
+            ? -3.15
+            : direction===1
+                ? 3.15
+                : 0;
+
+    keeper.startTime=
+        performance.now();
+
+    keeper.duration =
+        direction===0
+            ? .28
+            : .43;
+
+    keeper.active=true;
+
+    showDefendControls(false);
+
+    status(
+        direction<0
+            ? "DIVING LEFT"
+            : direction>0
+                ? "DIVING RIGHT"
+                : "STAYING CENTER",
+        "Read the striker..."
+    );
+
+    setTimeout(
+        ()=>{
+            if(
+                game.active &&
+                game.phase==="defend"
+            ){
+                cpuShoot();
+            }
+        },
+        210
+    );
+}
+
+
+/* =========================================================
+   CPU SHOOT
+========================================================= */
+
+function cpuShoot(){
+
+    if(
+        !game.active ||
+        game.phase!=="defend"
+    )
+        return;
+
+    const r=Math.random();
+
+    let x;
+
+    if(r<.32)
+        x=rand(-3.25,-2.15);
+    else if(r<.64)
+        x=rand(2.15,3.25);
+    else if(r<.82)
+        x=rand(-.65,.65);
+    else
+        x=rand(-2.8,2.8);
+
+    let z;
+
+    if(Math.random()<.3)
+        z=rand(1.75,2.3);
+    else
+        z=rand(.3,1.55);
+
+    let power=rand(67,96);
+
+    if(game.difficulty==="easy"){
+
+        x+=rand(-.55,.55);
+        z+=rand(-.25,.25);
+
+    }
+
+    if(game.difficulty==="hard"){
+
+        x+=rand(-.12,.12);
+        z+=rand(-.08,.08);
+    }
+
+    shootBall(
+        x,
+        z,
+        power,
+        "cpu"
+    );
+}
+
+
+/* =========================================================
+   UPDATE BALL
+========================================================= */
+
+function updateBall(now){
+
+    if(!ball.active)
+        return;
+
+    const t =
+        clamp(
+            (
+                now-
+                ball.startTime
+            )/
+            (
+                1000*
+                ball.duration
+            ),
+            0,
+            1
+        );
+
+    ball.x =
+        lerp(
+            0,
+            ball.targetX,
+            easeOut(t)
+        );
+
+    const arc =
+        Math.sin(
+            Math.PI*t
+        );
+
+    ball.z =
+        lerp(
+            .12,
+            ball.targetZ,
+            t
+        )+
+        arc*.62;
+
+    const p =
+        ballScreen(t);
+
+    ball.trail.push({
+        x:p.x,
+        y:p.y
+    });
+
+    if(ball.trail.length>12)
+        ball.trail.shift();
+
+    if(t>=1){
+
+        ball.active=false;
+
+        resolveShot();
+    }
+}
+
+
+/* =========================================================
+   UPDATE KEEPER
+========================================================= */
+
+function updateKeeper(now){
+
+    if(!keeper.active)
+        return;
+
+    if(
+        ball.owner==="you" &&
+        now<keeper.startTime
+    )
+        return;
+
+    const t =
+        clamp(
+            (
+                now-
+                keeper.startTime
+            )/
+            (
+                1000*
+                keeper.duration
+            ),
+            0,
+            1
+        );
+
+    keeper.x =
+        lerp(
+            keeper.startX,
+            keeper.targetX,
+            easeOut(t)
+        );
+
+    if(t>=1)
+        keeper.active=false;
+}
+
+
+/* =========================================================
+   RESOLVE SHOT
+========================================================= */
+
+function resolveShot(){
+
+    const x=ball.targetX;
+    const z=ball.targetZ;
+
+    if(
+        x<-3.66 ||
+        x>3.66 ||
+        z<0 ||
+        z>2.44
+    ){
+
+        finishShot(
+            false,
+            x<-3.66 ||
+            x>3.66
+                ? "WIDE!"
+                : "OVER THE BAR!"
+        );
+
+        return;
+    }
+
+    const cfg =
+        DIFFICULTY[
+            game.difficulty
+        ];
+
+    const distance =
+        Math.abs(
+            x-keeper.x
+        );
+
+    let reach;
+
+    if(
+        keeper.direction===0
+    )
+        reach=cfg.centerReach;
+    else
+        reach=cfg.diveReach;
+
+    if(
+        keeper.direction===-1 &&
+        x>-.45
+    )
+        reach=.16;
+
+    if(
+        keeper.direction===1 &&
+        x<.45
+    )
+        reach=.16;
+
+    if(
+        keeper.direction===0 &&
+        Math.abs(x)>1.05
+    )
+        reach=.12;
+
+    if(z>1.65)
+        reach*=.72;
+
+    if(z<.48)
+        reach*=.86;
+
+    const saved =
+        distance<=reach;
+
+    finishShot(
+        !saved,
+        saved
+            ? ball.owner==="you"
+                ? "SAVED!"
+                : "GREAT SAVE!"
+            : ball.owner==="you"
+                ? "GOAL!"
+                : "CPU SCORES!"
+    );
+}
+
+
+/* =========================================================
+   FINISH SHOT
+========================================================= */
+
+function finishShot(
+    scored,
+    text
+){
+
+    const owner=ball.owner;
+
+    const shotRound =
+        game.round-1;
+
+    if(owner==="you"){
+
+        if(scored){
+
+            game.yourScore++;
+
+            markSlot(
+                "you",
+                "goal",
+                shotRound
+            );
+
+        }else{
+
+            markSlot(
+                "you",
+                "miss",
+                shotRound
+            );
+        }
+
+        game.yourTaken=true;
+
+    }else{
+
+        if(scored){
+
+            game.opponentScore++;
+
+            markSlot(
+                "opp",
+                "goal",
+                shotRound
+            );
+
+        }else{
+
+            markSlot(
+                "opp",
+                "miss",
+                shotRound
+            );
+        }
+
+        game.opponentTaken=true;
+    }
+
+    updateScoreboard();
+
+    status(
+        text,
+        `${game.yourTeam.short} ${game.yourScore} - `+
+        `${game.opponentScore} ${game.opponentTeam.short}`
+    );
+
+    setTimeout(
+        nextTurn,
+        1150
+    );
+}
+
+
+/* =========================================================
+   NEXT TURN
+========================================================= */
+
+function nextTurn(){
+
+    ball.active=false;
+
+    keeper.active=false;
+
+    if(
+        game.yourTaken &&
+        !game.opponentTaken
+    ){
+
+        beginDefense();
+
+        return;
+    }
+
+    if(
+        game.yourTaken &&
+        game.opponentTaken
+    ){
+
+        if(
+            game.round>=game.maxRounds &&
+            game.yourScore!==game.opponentScore
+        ){
+
+            finishGame();
+
+            return;
+        }
+
+        if(
+            game.round>=game.maxRounds &&
+            game.yourScore===game.opponentScore
+        ){
+
+            game.suddenDeath=true;
+
+            game.maxRounds++;
+        }
+
+        game.round++;
+
+        game.yourTaken=false;
+
+        game.opponentTaken=false;
+
+        if(
+            $("yourSlots").children.length<
+            game.maxRounds
+        ){
+
+            const a =
+                document.createElement("span");
+
+            const b =
+                document.createElement("span");
+
+            a.className="slot";
+            b.className="slot";
+
+            $("yourSlots")
+                .appendChild(a);
+
+            $("oppSlots")
+                .appendChild(b);
+        }
+
+        updateScoreboard();
+
+        if(game.suddenDeath){
+
+            status(
+                "SUDDEN DEATH",
+                "One penalty each — winner takes it"
+            );
+        }
+
+        startYourPenalty();
+    }
+}
+
+
+/* =========================================================
+   GAME OVER
+========================================================= */
+
+function finishGame(){
+
+    game.active=false;
+
+    showShootControls(false);
+
+    showDefendControls(false);
+
+    let title;
+
+    if(
+        game.yourScore>
+        game.opponentScore
+    ){
+
+        title =
+            game.yourTeam.name.toUpperCase()+
+            " WIN!";
+
+    }else{
+
+        title =
+            game.opponentTeam.name.toUpperCase()+
+            " WIN!";
+    }
+
+    status(
+        title,
+        `${game.yourScore} - ${game.opponentScore} • RESET TO PLAY AGAIN`
+    );
+}
+
+
+/* =========================================================
+   RESPONSIVE WORLD
+========================================================= */
+
+/*
+    This is the important part.
+
+    Instead of using the old fixed
+    1280x720 coordinates, the scene is
+    calculated from the real screen.
+
+    Desktop:
+        wide football-camera view
+
+    Mobile:
+        portrait penalty-camera view
+*/
+
+function scene(){
+
+    const mobile =
+        isMobile();
+
+    if(mobile){
+
+        return {
+
+            goalTop:H*.245,
+
+            goalBottom:H*.405,
+
+            goalWidth:
+                Math.min(
+                    W*.82,
+                    360
+                ),
+
+            keeperY:
+                H*.355,
+
+            kickerY:
+                H*.755,
+
+            pitchTop:
+                H*.34
+
+        };
+
+    }
+
+    return {
+
+        goalTop:H*.205,
+
+        goalBottom:H*.445,
+
+        goalWidth:
+            Math.min(
+                W*.46,
+                740
+            ),
+
+        keeperY:
+            H*.365,
+
+        kickerY:
+            H*.735,
+
+        pitchTop:
+            H*.325
+    };
+}
+
+
+/* =========================================================
+   WORLD TO SCREEN
+========================================================= */
+
+function goalX(x){
+
+    const s=scene();
+
+    return W/2+
+        (
+            x/3.66
+        )*
+        (
+            s.goalWidth/2
+        );
+}
+
+function goalY(z){
+
+    const s=scene();
+
+    return lerp(
+        s.goalBottom,
+        s.goalTop,
+        z/2.44
+    );
+}
+
+function ballScreen(t){
+
+    const s=scene();
+
+    const xScale =
+        lerp(
+            s.goalWidth*.52,
+            s.goalWidth*.50,
+            t
+        );
+
+    return {
+
+        x:
+            W/2+
+            ball.x/
+            3.66*
+            xScale,
+
+        y:
+            lerp(
+                s.kickerY,
+                s.goalBottom,
+                t
+            )-
+            ball.z*
+            (
+                s.goalBottom-
+                s.goalTop
+            )/
+            2.44
+    };
+}
+
+
+/* =========================================================
+   STADIUM
+========================================================= */
+
+function drawStadium(){
+
+    const s=scene();
+
+    const sky =
+        ctx.createLinearGradient(
+            0,
+            0,
+            0,
+            s.pitchTop
+        );
+
+    sky.addColorStop(
+        0,
+        "#07121a"
+    );
+
+    sky.addColorStop(
+        .48,
+        "#172a34"
+    );
+
+    sky.addColorStop(
+        1,
+        "#0b1519"
+    );
+
+    ctx.fillStyle=sky;
+
+    ctx.fillRect(
+        0,
+        0,
+        W,
+        s.pitchTop+30
+    );
+
+
+    /*
+       Stadium roof / upper stands
+    */
+
+    ctx.fillStyle="#0b1115";
+
+    ctx.fillRect(
+        0,
+        s.pitchTop*.45,
+        W,
+        s.pitchTop*.5
+    );
+
+
+    /*
+       Crowd
+    */
+
+    const rows =
+        isMobile()
+            ? 9
+            : 7;
+
+    const dots =
+        isMobile()
+            ? 26
+            : 70;
+
+    for(
+        let row=0;
+        row<rows;
+        row++
+    ){
+
+        const y =
+            s.pitchTop*.52+
+            row*
+            (
+                s.pitchTop*.042
+            );
+
+        for(
+            let i=0;
+            i<dots;
+            i++
+        ){
+
+            const x =
+                i*
+                (
+                    W/dots
+                )+
+                (
+                    row%2
+                )*
+                5;
+
+            const size =
+                isMobile()
+                    ? 3
+                    : 6;
+
+            ctx.fillStyle =
+                row%3===0
+                    ? "rgba(255,255,255,.15)"
+                    : "rgba(255,255,255,.09)";
+
+            ctx.fillRect(
+                x,
+                y,
+                size,
+                size
+            );
+        }
+    }
+
+
+    /*
+       Stadium boards
+    */
+
+    ctx.fillStyle="#111c21";
+
+    ctx.fillRect(
+        0,
+        s.pitchTop*.82,
+        W,
+        s.pitchTop*.14
+    );
+
+    for(
+        let i=0;
+        i<Math.ceil(W/95);
+        i++
+    ){
+
+        ctx.fillStyle =
+            i%2===0
+                ? "#26363b"
+                : "#17252a";
+
+        ctx.fillRect(
+            i*95,
+            s.pitchTop*.86,
+            88,
+            s.pitchTop*.095
+        );
+    }
+
+
+    /*
+       Lights
+    */
+
+    const lightCount =
+        isMobile()
+            ? 4
+            : 8;
+
+    for(
+        let i=0;
+        i<lightCount;
+        i++
+    ){
+
+        const x =
+            W*
+            (
+                .08+
+                i*
+                (
+                    .84/
+                    Math.max(
+                        1,
+                        lightCount-1
+                    )
+                )
+            );
+
+        const y =
+            s.pitchTop*.29+
+            (
+                i%2
+            )*
+            18;
+
+        ctx.fillStyle=
+            "rgba(255,255,230,.9)";
+
+        ctx.beginPath();
+
+        ctx.arc(
+            x,
+            y,
+            isMobile()?4:5,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+
+        ctx.fillStyle=
+            "rgba(255,255,220,.06)";
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            x-8,
+            y+6
+        );
+
+        ctx.lineTo(
+            x+8,
+            y+6
+        );
+
+        ctx.lineTo(
+            x+
+            (
+                isMobile()
+                    ? 45
+                    : 90
+            ),
+            s.pitchTop
+        );
+
+        ctx.lineTo(
+            x-
+            (
+                isMobile()
+                    ? 45
+                    : 90
+            ),
+            s.pitchTop
+        );
+
+        ctx.closePath();
+
+        ctx.fill();
+    }
+}
+
+
+/* =========================================================
+   PITCH
+========================================================= */
+
+function drawPitch(){
+
+    const s=scene();
+
+    const pitch =
+        ctx.createLinearGradient(
+            0,
+            s.pitchTop,
+            0,
+            H
+        );
+
+    pitch.addColorStop(
+        0,
+        "#2d873f"
+    );
+
+    pitch.addColorStop(
+        .5,
+        "#176a31"
+    );
+
+    pitch.addColorStop(
+        1,
+        "#0a3d20"
+    );
+
+    ctx.fillStyle=pitch;
+
+    ctx.fillRect(
+        0,
+        s.pitchTop,
+        W,
+        H-s.pitchTop
+    );
+
+
+    /*
+       Grass stripes
+    */
+
+    const stripeHeight =
+        (H-s.pitchTop)/12;
+
+    for(
+        let i=0;
+        i<12;
+        i++
+    ){
+
+        ctx.fillStyle =
+            i%2===0
+                ? "rgba(255,255,255,.025)"
+                : "rgba(0,0,0,.045)";
+
+        ctx.fillRect(
+            0,
+            s.pitchTop+
+            i*stripeHeight,
+            W,
+            stripeHeight
+        );
+    }
+
+
+    /*
+       Penalty area
+    */
+
+    const nearY=s.goalBottom;
+
+    const farY=H;
+
+    const topWidth=
+        s.goalWidth*.78;
+
+    const bottomWidth=
+        Math.min(
+            W*.82,
+            s.goalWidth*1.7
+        );
+
+    ctx.strokeStyle=
+        "rgba(255,255,255,.62)";
+
+    ctx.lineWidth=
+        isMobile()?1.4:2;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        W/2-topWidth/2,
+        nearY+4
+    );
+
+    ctx.lineTo(
+        W/2-bottomWidth/2,
+        farY
+    );
+
+    ctx.moveTo(
+        W/2+topWidth/2,
+        nearY+4
+    );
+
+    ctx.lineTo(
+        W/2+bottomWidth/2,
+        farY
+    );
+
+    ctx.stroke();
+
+
+    /*
+       Six-yard box
+    */
+
+    const boxTop=nearY+2;
+
+    const boxWidth=
+        s.goalWidth*.54;
+
+    const boxBottom=
+        boxTop+
+        (
+            isMobile()
+                ? H*.10
+                : H*.15
+        );
+
+    ctx.strokeStyle=
+        "rgba(255,255,255,.42)";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        W/2-boxWidth/2,
+        boxTop
+    );
+
+    ctx.lineTo(
+        W/2+boxWidth/2,
+        boxTop
+    );
+
+    ctx.lineTo(
+        W/2+
+        boxWidth*.66,
+        boxBottom
+    );
+
+    ctx.lineTo(
+        W/2-
+        boxWidth*.66,
+        boxBottom
+    );
+
+    ctx.closePath();
+
+    ctx.stroke();
+
+
+    /*
+       Penalty spot
+    */
+
+    ctx.fillStyle="#fff";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        W/2,
+        s.kickerY,
+        isMobile()?3:4,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+}
+
+
+/* =========================================================
+   GOAL
+========================================================= */
+
+function drawGoal(){
+
+    const s=scene();
+
+    const left=
+        W/2-
+        s.goalWidth/2;
+
+    const right=
+        W/2+
+        s.goalWidth/2;
+
+    const top=s.goalTop;
+
+    const bottom=s.goalBottom;
+
+
+    /*
+       Net
+    */
+
+    ctx.save();
+
+    ctx.strokeStyle=
+        "rgba(255,255,255,.22)";
+
+    ctx.lineWidth=
+        isMobile()?0.7:1;
+
+    const verticalStep =
+        isMobile()
+            ? 12
+            : 16;
+
+    for(
+        let x=left;
+        x<=right;
+        x+=verticalStep
+    ){
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            x,
+            top
+        );
+
+        ctx.lineTo(
+            x,
+            bottom
+        );
+
+        ctx.stroke();
+    }
+
+    const horizontalStep =
+        isMobile()
+            ? 10
+            : 13;
+
+    for(
+        let y=top;
+        y<=bottom;
+        y+=horizontalStep
+    ){
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            left,
+            y
+        );
+
+        ctx.lineTo(
+            right,
+            y
+        );
+
+        ctx.stroke();
+    }
+
+    ctx.restore();
+
+
+    /*
+       Goal frame
+    */
+
+    ctx.strokeStyle="#f3f5f6";
+
+    ctx.lineWidth=
+        isMobile()?5:7;
+
+    ctx.lineCap="round";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        left,
+        bottom
+    );
+
+    ctx.lineTo(
+        left,
+        top
+    );
+
+    ctx.lineTo(
+        right,
+        top
+    );
+
+    ctx.lineTo(
+        right,
+        bottom
+    );
+
+    ctx.stroke();
+}
+
+
+/* =========================================================
+   PLAYER
+========================================================= */
+
+function drawPlayer(){
+
+    const team =
+        ball.owner==="cpu"
+            ? game.opponentTeam
+            : game.yourTeam;
+
+    if(!team)
+        return;
+
+    const s=scene();
+
+    const x=W/2;
+
+    const y=s.kickerY;
+
+    const scale =
+        isMobile()
+            ? Math.min(
+                1,
+                W/390
+            )
+            : Math.min(
+                1,
+                W/1280
+            );
+
+    ctx.save();
+
+    ctx.translate(
+        x,
+        y
+    );
+
+    ctx.scale(
+        scale,
+        scale
+    );
+
+
+    /*
+       Shadow
+    */
+
+    ctx.fillStyle=
+        "rgba(0,0,0,.45)";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        0,
+        48,
+        30,
+        7,
+        0,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    /*
+       Legs
+    */
+
+    ctx.fillStyle="#111923";
+
+    ctx.fillRect(
+        -14,
+        18,
+        11,
+        37
+    );
+
+    ctx.fillRect(
+        3,
+        18,
+        11,
+        37
+    );
+
+
+    /*
+       Boots
+    */
+
+    ctx.fillStyle="#090b0d";
+
+    ctx.fillRect(
+        -18,
+        49,
+        18,
+        7
+    );
+
+    ctx.fillRect(
+        1,
+        49,
+        18,
+        7
+    );
+
+
+    /*
+       Jersey
+    */
+
+    ctx.fillStyle=
+        team.primary;
+
+    ctx.beginPath();
+
+    ctx.roundRect(
+        -23,
+        -36,
+        46,
+        60,
+        7
+    );
+
+    ctx.fill();
+
+
+    /*
+       Secondary stripe
+    */
+
+    ctx.fillStyle=
+        team.secondary;
+
+    ctx.fillRect(
+        -4,
+        -36,
+        8,
+        60
+    );
+
+
+    /*
+       Arms
+    */
+
+    ctx.strokeStyle=
+        team.primary;
+
+    ctx.lineWidth=12;
+
+    ctx.lineCap="round";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        -20,
+        -22
+    );
+
+    ctx.lineTo(
+        -39,
+        3
+    );
+
+    ctx.moveTo(
+        20,
+        -22
+    );
+
+    ctx.lineTo(
+        39,
+        3
+    );
+
+    ctx.stroke();
+
+
+    /*
+       Head
+    */
+
+    ctx.fillStyle="#9b6954";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        -52,
+        16,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    /*
+       Hair
+    */
+
+    ctx.fillStyle="#171719";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        -58,
+        16,
+        Math.PI,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    /*
+       Badge
+    */
+
+    ctx.fillStyle=
+        team.secondary;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        -13,
+        -21,
+        5,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+    ctx.restore();
+}
+
+
+/* =========================================================
+   KEEPER
+========================================================= */
+
+function drawKeeper(){
+
+    const team =
+        game.phase==="defend" ||
+        ball.owner==="cpu"
+            ? game.yourTeam
+            : game.opponentTeam;
+
+    if(!team)
+        return;
+
+    const s=scene();
+
+    const x=
+        goalX(keeper.x);
+
+    const y=
+        s.keeperY;
+
+    const scale =
+        isMobile()
+            ? Math.min(
+                1.08,
+                W/350
+            )
+            : Math.min(
+                1,
+                W/1280
+            );
+
+    const movement =
+        keeper.targetX-
+        keeper.startX;
+
+    const lean=
+        clamp(
+            movement/3,
+            -1,
+            1
+        );
+
+    ctx.save();
+
+    ctx.translate(
+        x,
+        y
+    );
+
+    ctx.scale(
+        scale,
+        scale
+    );
+
+    if(keeper.active)
+        ctx.rotate(
+            lean*.25
+        );
+
+
+    /*
+       Shadow
+    */
+
+    ctx.fillStyle=
+        "rgba(0,0,0,.55)";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        0,
+        65,
+        38+
+        Math.abs(lean)*30,
+        8,
+        0,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    /*
+       Legs
+    */
+
+    ctx.fillStyle=
+        team.secondary;
+
+    ctx.fillRect(
+        -18,
+        20,
+        13,
+        43
+    );
+
+    ctx.fillRect(
+        5,
+        20,
+        13,
+        43
+    );
+
+
+    /*
+       Body
+    */
+
+    ctx.fillStyle=
+        team.primary;
+
+    ctx.beginPath();
+
+    ctx.roundRect(
+        -26,
+        -43,
+        52,
+        70,
+        8
+    );
+
+    ctx.fill();
+
+
+    /*
+       Stripe
+    */
+
+    ctx.fillStyle=
+        team.secondary;
+
+    ctx.fillRect(
+        -4,
+        -43,
+        8,
+        70
+    );
+
+
+    /*
+       Arms
+    */
+
+    const stretch =
+        31+
+        Math.abs(lean)*45;
+
+    ctx.strokeStyle=
+        team.primary;
+
+    ctx.lineWidth=14;
+
+    ctx.lineCap="round";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        -21,
+        -27
+    );
+
+    ctx.lineTo(
+        lean<0
+            ? -stretch
+            : -31,
+        -17
+    );
+
+    ctx.moveTo(
+        21,
+        -27
+    );
+
+    ctx.lineTo(
+        lean>0
+            ? stretch
+            : 31,
+        -17
+    );
+
+    ctx.stroke();
+
+
+    /*
+       Gloves
+    */
+
+    ctx.fillStyle="#f2f4f4";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        lean<0
+            ? -stretch
+            : -31,
+        -17,
+        9,
+        0,
+        Math.PI*2
+    );
+
+    ctx.arc(
+        lean>0
+            ? stretch
+            : 31,
+        -17,
+        9,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    /*
+       Head
+    */
+
+    ctx.fillStyle="#a96f56";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        -61,
+        17,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    /*
+       Hair
+    */
+
+    ctx.fillStyle="#151719";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        -67,
+        17,
+        Math.PI,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+    ctx.restore();
+}
+
+
+/* =========================================================
+   BALL
+========================================================= */
+
+function drawBall(){
+
+    if(!ball.active)
+        return;
+
+    ball.trail.forEach(
+        (p,i)=>{
+
+            const alpha =
+                (
+                    i/
+                    Math.max(
+                        1,
+                        ball.trail.length
+                    )
+                )*.22;
+
+            ctx.fillStyle=
+                `rgba(255,255,255,${alpha})`;
+
+            ctx.beginPath();
+
+            ctx.arc(
+                p.x,
+                p.y,
+                isMobile()?3.5:5,
+                0,
+                Math.PI*2
+            );
+
+            ctx.fill();
+        }
+    );
+
+
+    const t =
+        clamp(
+            (
+                performance.now()-
+                ball.startTime
+            )/
+            (
+                1000*
+                ball.duration
+            ),
+            0,
+            1
+        );
+
+    const p=
+        ballScreen(t);
+
+    const radius=
+        lerp(
+            isMobile()?12:16,
+            isMobile()?5:7,
+            t
+        );
+
+
+    /*
+       Shadow
+    */
+
+    ctx.fillStyle=
+        "rgba(0,0,0,.5)";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        p.x,
+        p.y+10,
+        radius*1.25,
+        radius*.34,
+        0,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    /*
+       Ball
+    */
+
+    const gradient =
+        ctx.createRadialGradient(
+            p.x-radius*.3,
+            p.y-radius*.35,
+            1,
+            p.x,
+            p.y,
+            radius
+        );
+
+    gradient.addColorStop(
+        0,
+        "#fff"
+    );
+
+    gradient.addColorStop(
+        .72,
+        "#e5e8e9"
+    );
+
+    gradient.addColorStop(
+        1,
+        "#8b9499"
+    );
+
+    ctx.fillStyle=gradient;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        p.x,
+        p.y,
+        radius,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    /*
+       Simple football pattern
+    */
+
+    ctx.strokeStyle="#222";
+
+    ctx.lineWidth=
+        Math.max(
+            .5,
+            radius*.07
+        );
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        p.x-radius*.42,
+        p.y
+    );
+
+    ctx.lineTo(
+        p.x+radius*.42,
+        p.y
+    );
+
+    ctx.moveTo(
+        p.x,
+        p.y-radius*.42
+    );
+
+    ctx.lineTo(
+        p.x,
+        p.y+radius*.42
+    );
+
+    ctx.stroke();
+}
+
+
+/* =========================================================
+   TARGET
+========================================================= */
+
+function drawTarget(){
+
+    if(game.phase!=="shoot")
+        return;
+
+    const x=
+        goalX(
+            selectedZone.x
+        );
+
+    const y=
+        goalY(
+            selectedZone.z
+        );
+
+    const color=
+        game.yourTeam
+            ? game.yourTeam.primary
+            : "#ffd43b";
+
+    const size=
+        isMobile()?13:18;
+
+    ctx.save();
+
+    ctx.strokeStyle=color;
+
+    ctx.lineWidth=
+        isMobile()?2:3;
+
+    ctx.shadowColor=color;
+
+    ctx.shadowBlur=
+        isMobile()?8:15;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x,
+        y,
+        size,
+        0,
+        Math.PI*2
+    );
+
+    ctx.stroke();
+
+    ctx.shadowBlur=0;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x-size-5,
+        y
+    );
+
+    ctx.lineTo(
+        x+size+5,
+        y
+    );
+
+    ctx.moveTo(
+        x,
+        y-size-5
+    );
+
+    ctx.lineTo(
+        x,
+        y+size+5
+    );
+
+    ctx.stroke();
+
+    ctx.restore();
+}
+
+
+/* =========================================================
+   VIGNETTE
+========================================================= */
+
+function drawVignette(){
+
+    const gradient =
+        ctx.createRadialGradient(
+            W/2,
+            H*.48,
+            Math.min(W,H)*.25,
+            W/2,
+            H*.5,
+            Math.max(W,H)*.75
+        );
+
+    gradient.addColorStop(
+        0,
+        "rgba(0,0,0,0)"
+    );
+
+    gradient.addColorStop(
+        1,
+        "rgba(0,0,0,.40)"
+    );
+
+    ctx.fillStyle=gradient;
+
+    ctx.fillRect(
+        0,
+        0,
+        W,
+        H
+    );
+}
+
+
+/* =========================================================
+   RENDER
+========================================================= */
+
+function render(){
+
+    ctx.clearRect(
+        0,
+        0,
+        W,
+        H
+    );
+
+    drawStadium();
+
+    drawPitch();
+
+    drawGoal();
+
+    drawPlayer();
+
+    drawKeeper();
+
+    drawTarget();
+
+    drawBall();
+
+    drawVignette();
+}
+
+
+/* =========================================================
+   GAME LOOP
+========================================================= */
+
+function loop(now){
+
+    updateBall(now);
+
+    updateKeeper(now);
+
+    render();
+
+    requestAnimationFrame(loop);
+}
+
+requestAnimationFrame(loop);
+
+
+/* =========================================================
+   DIFFICULTY
+========================================================= */
+
+$("difficulty").onchange=()=>{
+
+    game.difficulty =
+        $("difficulty").value;
+
+    if(game.active){
+
+        status(
+            "DIFFICULTY UPDATED",
+            "Keeper AI adjusted for the next shot"
+        );
+    }
+};
+
+
+/* =========================================================
+   INITIAL
+========================================================= */
+
+setupScoreSlots();
+
+updateScoreboard();
+
+status(
+    "SELECT TEAMS",
+    "Choose your team and opponent"
+);
+
+</script>
+
+</body>
+</html>
