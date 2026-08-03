@@ -1,0 +1,3097 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
+<title>ISL Penalty Shootout</title>
+
+<style>
+:root{
+    --accent:#f6c400;
+    --accent2:#0b55d8;
+    --dark:#071019;
+    --panel:rgba(5,12,20,.94);
+    --line:rgba(255,255,255,.14);
+    --text:#fff;
+    --muted:#9eabb5;
+}
+
+*{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+    margin:0;
+    width:100%;
+    min-height:100%;
+    background:#020508;
+    color:white;
+    font-family:Inter,Segoe UI,Arial,sans-serif;
+}
+
+body{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:8px;
+}
+
+button,select{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
+}
+
+#app{
+    width:min(1280px,100%);
+}
+
+#gameFrame{
+    position:relative;
+    width:100%;
+    aspect-ratio:16/9;
+    overflow:hidden;
+    background:#102b19;
+    border:1px solid rgba(255,255,255,.16);
+    border-radius:14px;
+    box-shadow:
+        0 30px 100px #000,
+        0 0 0 1px rgba(255,255,255,.03);
+}
+
+canvas{
+    width:100%;
+    height:100%;
+    display:block;
+    touch-action:none;
+}
+
+/* =====================================================
+   TEAM SELECTION
+===================================================== */
+
+#teamScreen{
+    position:absolute;
+    inset:0;
+    z-index:200;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:30px;
+    background:
+        radial-gradient(circle at 50% 25%,rgba(255,255,255,.08),transparent 35%),
+        linear-gradient(180deg,rgba(2,6,10,.88),rgba(2,6,10,.97));
+    backdrop-filter:blur(10px);
+}
+
+.teamPanel{
+    width:min(900px,100%);
+    max-height:92%;
+    overflow:auto;
+    padding:28px;
+    border:1px solid rgba(255,255,255,.16);
+    background:rgba(5,12,19,.96);
+    box-shadow:0 25px 70px #000;
+    border-radius:16px;
+}
+
+.gameTitle{
+    text-align:center;
+    font-size:clamp(24px,4vw,46px);
+    font-weight:1000;
+    letter-spacing:2px;
+}
+
+.gameSubtitle{
+    text-align:center;
+    color:#93a2ad;
+    margin:7px 0 24px;
+    font-size:12px;
+    letter-spacing:1px;
+}
+
+.selectionTitle{
+    margin:20px 0 10px;
+    font-size:11px;
+    color:#9baab5;
+    font-weight:900;
+    letter-spacing:1.5px;
+}
+
+.teamGrid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:9px;
+}
+
+.teamCard{
+    position:relative;
+    min-height:82px;
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:10px;
+    background:linear-gradient(180deg,#12202a,#091119);
+    color:white;
+    padding:12px 7px;
+    transition:.18s;
+}
+
+.teamCard:hover{
+    transform:translateY(-2px);
+    border-color:rgba(255,255,255,.35);
+}
+
+.teamCard.selected{
+    border-color:var(--accent);
+    box-shadow:
+        0 0 0 2px var(--accent),
+        0 0 25px rgba(255,210,50,.16);
+}
+
+.teamBadge{
+    width:32px;
+    height:32px;
+    margin:auto;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:10px;
+    font-weight:1000;
+    border:2px solid rgba(255,255,255,.5);
+}
+
+.teamName{
+    margin-top:8px;
+    font-size:10px;
+    font-weight:900;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+#startMatch{
+    display:block;
+    width:260px;
+    max-width:100%;
+    margin:25px auto 0;
+    height:48px;
+    border:0;
+    border-radius:9px;
+    background:linear-gradient(180deg,#ffe45a,#d8a817);
+    color:#171200;
+    font-weight:1000;
+    letter-spacing:1px;
+}
+
+#startMatch:disabled{
+    opacity:.35;
+    cursor:not-allowed;
+}
+
+/* =====================================================
+   TOP HUD
+===================================================== */
+
+#topHUD{
+    position:absolute;
+    z-index:50;
+    left:15px;
+    right:15px;
+    top:15px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    pointer-events:none;
+}
+
+.scoreBox{
+    width:330px;
+    max-width:42%;
+    background:rgba(4,10,17,.9);
+    border:1px solid rgba(255,255,255,.15);
+    border-radius:6px;
+    overflow:hidden;
+    box-shadow:0 10px 30px #0008;
+    backdrop-filter:blur(10px);
+}
+
+.scoreTeam{
+    display:grid;
+    grid-template-columns:65px 1fr 48px;
+    height:48px;
+    border-bottom:1px solid rgba(255,255,255,.12);
+}
+
+.scoreTeam:last-child{
+    border-bottom:0;
+}
+
+.scoreName{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:13px;
+    font-weight:1000;
+}
+
+.scoreSlots{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:5px;
+}
+
+.slot{
+    width:22px;
+    height:16px;
+    border:1px solid white;
+    background:#e7ebed;
+}
+
+.slot.goal{
+    background:#21d77c;
+    border-color:#8dffc0;
+}
+
+.slot.miss{
+    background:#f34d5b;
+    border-color:#ffadb5;
+}
+
+.scoreNumber{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#ffd91c;
+    color:#111;
+    font-size:22px;
+    font-weight:1000;
+}
+
+#centerInfo{
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    text-align:center;
+    background:rgba(3,9,14,.86);
+    border:1px solid rgba(255,255,255,.15);
+    padding:7px 16px;
+    border-radius:30px;
+    backdrop-filter:blur(10px);
+}
+
+#centerInfo small{
+    display:block;
+    color:#8f9da7;
+    font-size:7px;
+    letter-spacing:2px;
+}
+
+#centerInfo strong{
+    font-size:12px;
+}
+
+#gameButtons{
+    display:flex;
+    gap:6px;
+    pointer-events:auto;
+}
+
+.smallBtn{
+    height:38px;
+    padding:0 13px;
+    border:1px solid rgba(255,255,255,.18);
+    border-radius:7px;
+    background:rgba(5,14,21,.92);
+    color:white;
+    font-size:9px;
+    font-weight:1000;
+}
+
+#resetBtn{
+    background:#c63848;
+}
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+#statusBox{
+    position:absolute;
+    z-index:45;
+    left:50%;
+    top:92px;
+    transform:translateX(-50%);
+    text-align:center;
+    min-width:270px;
+    padding:9px 17px;
+    border-radius:12px;
+    background:rgba(3,9,14,.72);
+    border:1px solid rgba(255,255,255,.12);
+    backdrop-filter:blur(9px);
+}
+
+#statusMain{
+    font-size:20px;
+    font-weight:1000;
+    letter-spacing:1px;
+}
+
+#statusSub{
+    color:#aab6bd;
+    margin-top:3px;
+    font-size:9px;
+}
+
+/* =====================================================
+   SHOOTING CONTROLS
+===================================================== */
+
+#shootControls{
+    position:absolute;
+    z-index:70;
+    left:50%;
+    bottom:14px;
+    transform:translateX(-50%);
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+}
+
+.zoneGrid{
+    display:grid;
+    grid-template-columns:repeat(3,70px);
+    gap:5px;
+}
+
+.zone{
+    height:34px;
+    border:1px solid rgba(255,255,255,.22);
+    border-radius:6px;
+    background:rgba(5,13,19,.93);
+    color:white;
+    font-size:8px;
+    font-weight:1000;
+}
+
+.zone.selected{
+    background:var(--accent);
+    color:#111;
+    border-color:#fff09b;
+}
+
+.powerWrap{
+    width:215px;
+    padding:5px 8px;
+    border-radius:20px;
+    background:rgba(4,10,15,.9);
+    border:1px solid rgba(255,255,255,.18);
+}
+
+#power{
+    width:100%;
+    accent-color:var(--accent);
+}
+
+#shootBtn{
+    width:150px;
+    height:40px;
+    border:0;
+    border-radius:8px;
+    background:linear-gradient(180deg,#ffe866,#d7a91d);
+    color:#181300;
+    font-size:10px;
+    font-weight:1000;
+    letter-spacing:1px;
+}
+
+/* =====================================================
+   DEFEND CONTROLS
+===================================================== */
+
+#defendControls{
+    position:absolute;
+    z-index:70;
+    left:50%;
+    bottom:15px;
+    transform:translateX(-50%);
+    display:none;
+    gap:7px;
+}
+
+.diveBtn{
+    min-width:90px;
+    height:43px;
+    border-radius:8px;
+    border:1px solid rgba(255,255,255,.22);
+    background:rgba(4,12,18,.95);
+    color:white;
+    font-size:9px;
+    font-weight:1000;
+}
+
+.diveBtn.center{
+    background:linear-gradient(180deg,#30d979,#109c53);
+    color:#02160a;
+}
+
+/* =====================================================
+   DIFFICULTY
+===================================================== */
+
+#difficultyBox{
+    position:absolute;
+    z-index:80;
+    right:15px;
+    top:64px;
+    display:none;
+    align-items:center;
+    gap:6px;
+    background:rgba(4,11,17,.9);
+    border:1px solid rgba(255,255,255,.14);
+    border-radius:7px;
+    padding:7px 9px;
+}
+
+#difficultyBox span{
+    color:#8f9da6;
+    font-size:7px;
+    font-weight:900;
+}
+
+#difficulty{
+    border:0;
+    outline:0;
+    background:transparent;
+    color:white;
+    font-size:8px;
+    font-weight:1000;
+}
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media(max-width:700px){
+
+    body{
+        padding:2px;
+    }
+
+    #gameFrame{
+        border-radius:8px;
+    }
+
+    #teamScreen{
+        padding:10px;
+    }
+
+    .teamPanel{
+        padding:15px;
+    }
+
+    .teamGrid{
+        grid-template-columns:repeat(3,1fr);
+        gap:6px;
+    }
+
+    .teamCard{
+        min-height:65px;
+        padding:7px 3px;
+    }
+
+    .teamBadge{
+        width:25px;
+        height:25px;
+        font-size:8px;
+    }
+
+    .teamName{
+        font-size:7px;
+        margin-top:5px;
+    }
+
+    .gameTitle{
+        font-size:25px;
+    }
+
+    .gameSubtitle{
+        font-size:8px;
+        margin-bottom:10px;
+    }
+
+    #topHUD{
+        top:6px;
+        left:6px;
+        right:6px;
+    }
+
+    .scoreBox{
+        width:210px;
+        max-width:58%;
+    }
+
+    .scoreTeam{
+        height:31px;
+        grid-template-columns:43px 1fr 30px;
+    }
+
+    .scoreName{
+        font-size:9px;
+    }
+
+    .slot{
+        width:14px;
+        height:10px;
+    }
+
+    .scoreSlots{
+        gap:2px;
+    }
+
+    .scoreNumber{
+        font-size:15px;
+    }
+
+    #centerInfo{
+        display:none;
+    }
+
+    #gameButtons{
+        gap:3px;
+    }
+
+    .smallBtn{
+        height:28px;
+        padding:0 7px;
+        font-size:7px;
+    }
+
+    #statusBox{
+        top:46px;
+        min-width:180px;
+        padding:6px 9px;
+    }
+
+    #statusMain{
+        font-size:12px;
+    }
+
+    #statusSub{
+        font-size:7px;
+    }
+
+    #difficultyBox{
+        top:38px;
+        right:6px;
+        padding:4px 6px;
+    }
+
+    #difficultyBox span{
+        font-size:5px;
+    }
+
+    #difficulty{
+        font-size:6px;
+    }
+
+    #shootControls{
+        bottom:6px;
+        gap:4px;
+    }
+
+    .zoneGrid{
+        grid-template-columns:repeat(3,56px);
+        gap:3px;
+    }
+
+    .zone{
+        height:27px;
+        font-size:6px;
+    }
+
+    .powerWrap{
+        width:175px;
+        padding:2px 6px;
+    }
+
+    #shootBtn{
+        height:34px;
+        width:125px;
+        font-size:8px;
+    }
+
+    #defendControls{
+        bottom:6px;
+        gap:4px;
+    }
+
+    .diveBtn{
+        min-width:70px;
+        height:34px;
+        font-size:7px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="app">
+
+<div id="gameFrame">
+
+<canvas id="game" width="1280" height="720"></canvas>
+
+<!-- ===================================================
+     TEAM SELECTION
+=================================================== -->
+
+<div id="teamScreen">
+
+<div class="teamPanel">
+
+<div class="gameTitle">ISL PENALTY SHOOTOUT</div>
+<div class="gameSubtitle">
+    SELECT YOUR TEAM AND OPPONENT
+</div>
+
+<div class="selectionTitle">YOUR TEAM</div>
+
+<div class="teamGrid" id="yourTeams"></div>
+
+<div class="selectionTitle">OPPONENT</div>
+
+<div class="teamGrid" id="opponentTeams"></div>
+
+<button id="startMatch" disabled>
+    START MATCH
+</button>
+
+</div>
+</div>
+
+<!-- ===================================================
+     TOP HUD
+=================================================== -->
+
+<div id="topHUD">
+
+<div class="scoreBox">
+
+<div class="scoreTeam">
+    <div class="scoreName" id="yourName">YOU</div>
+    <div class="scoreSlots" id="yourSlots"></div>
+    <div class="scoreNumber" id="yourScore">0</div>
+</div>
+
+<div class="scoreTeam">
+    <div class="scoreName" id="oppName">CPU</div>
+    <div class="scoreSlots" id="oppSlots"></div>
+    <div class="scoreNumber" id="oppScore">0</div>
+</div>
+
+</div>
+
+<div id="centerInfo">
+    <small>ISL PENALTY SHOOTOUT</small>
+    <strong>
+        ROUND <span id="round">1</span> / <span id="maxRound">5</span>
+    </strong>
+</div>
+
+<div id="gameButtons">
+    <button class="smallBtn" id="changeTeams">
+        TEAMS
+    </button>
+    <button class="smallBtn" id="resetBtn">
+        RESET
+    </button>
+</div>
+
+</div>
+
+<!-- ===================================================
+     STATUS
+=================================================== -->
+
+<div id="statusBox">
+    <div id="statusMain">SELECT TEAMS</div>
+    <div id="statusSub">Choose your team and opponent</div>
+</div>
+
+<!-- ===================================================
+     DIFFICULTY
+=================================================== -->
+
+<div id="difficultyBox">
+    <span>DIFFICULTY</span>
+    <select id="difficulty">
+        <option value="easy">EASY</option>
+        <option value="medium" selected>MEDIUM</option>
+        <option value="hard">HARD</option>
+    </select>
+</div>
+
+<!-- ===================================================
+     SHOOT CONTROLS
+=================================================== -->
+
+<div id="shootControls">
+
+    <div class="zoneGrid">
+
+        <button class="zone" data-x="-2.7" data-z="2.0">
+            ↖ HIGH
+        </button>
+
+        <button class="zone" data-x="0" data-z="2.0">
+            ↑ HIGH
+        </button>
+
+        <button class="zone" data-x="2.7" data-z="2.0">
+            ↗ HIGH
+        </button>
+
+        <button class="zone" data-x="-2.7" data-z="1.15">
+            ← MID
+        </button>
+
+        <button class="zone selected" data-x="0" data-z="1.15">
+            CENTER
+        </button>
+
+        <button class="zone" data-x="2.7" data-z="1.15">
+            MID →
+        </button>
+
+        <button class="zone" data-x="-2.7" data-z=".35">
+            ↙ LOW
+        </button>
+
+        <button class="zone" data-x="0" data-z=".35">
+            ↓ LOW
+        </button>
+
+        <button class="zone" data-x="2.7" data-z=".35">
+            ↘ LOW
+        </button>
+
+    </div>
+
+    <div class="powerWrap">
+        <input
+            id="power"
+            type="range"
+            min="35"
+            max="100"
+            value="72">
+    </div>
+
+    <button id="shootBtn">
+        SHOOT
+    </button>
+
+</div>
+
+<!-- ===================================================
+     DEFEND CONTROLS
+=================================================== -->
+
+<div id="defendControls">
+
+    <button class="diveBtn" data-dir="-1">
+        ← DIVE LEFT
+    </button>
+
+    <button class="diveBtn center" data-dir="0">
+        CENTER
+    </button>
+
+    <button class="diveBtn" data-dir="1">
+        DIVE RIGHT →
+    </button>
+
+</div>
+
+</div>
+</div>
+
+<script>
+"use strict";
+
+/* =====================================================
+   CANVAS
+===================================================== */
+
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+const W = 1280;
+const H = 720;
+
+const $ = id => document.getElementById(id);
+
+const clamp = (v,min,max) =>
+    Math.max(min,Math.min(max,v));
+
+const lerp = (a,b,t) =>
+    a+(b-a)*t;
+
+const rand = (a,b) =>
+    a+Math.random()*(b-a);
+
+const easeOut = t =>
+    1-Math.pow(1-t,3);
+
+
+/* =====================================================
+   TEAM DATA
+===================================================== */
+
+const TEAMS = {
+
+    kbfc:{
+        name:"Kerala Blasters",
+        short:"KBFC",
+        primary:"#f4c400",
+        secondary:"#123d91",
+        keeper:"#f4c400",
+        badge:"KB"
+    },
+
+    mbsg:{
+        name:"Mohun Bagan",
+        short:"MBSG",
+        primary:"#008f52",
+        secondary:"#7b173d",
+        keeper:"#008f52",
+        badge:"MB"
+    },
+
+    mumbai:{
+        name:"Mumbai City",
+        short:"MCFC",
+        primary:"#75c9ee",
+        secondary:"#123c73",
+        keeper:"#75c9ee",
+        badge:"MC"
+    },
+
+    bengaluru:{
+        name:"Bengaluru FC",
+        short:"BFC",
+        primary:"#0871c9",
+        secondary:"#e8edf1",
+        keeper:"#0871c9",
+        badge:"BE"
+    },
+
+    eastbengal:{
+        name:"East Bengal",
+        short:"EBFC",
+        primary:"#e33b32",
+        secondary:"#f5c400",
+        keeper:"#e33b32",
+        badge:"EB"
+    },
+
+    goa:{
+        name:"FC Goa",
+        short:"FCG",
+        primary:"#e66d16",
+        secondary:"#253b8e",
+        keeper:"#e66d16",
+        badge:"GOA"
+    },
+
+    chennaiyin:{
+        name:"Chennaiyin FC",
+        short:"CFC",
+        primary:"#0b7cbe",
+        secondary:"#102f61",
+        keeper:"#0b7cbe",
+        badge:"CF"
+    },
+
+    hyderabad:{
+        name:"Hyderabad FC",
+        short:"HFC",
+        primary:"#f5a800",
+        secondary:"#171717",
+        keeper:"#f5a800",
+        badge:"HYD"
+    },
+
+    odisha:{
+        name:"Odisha FC",
+        short:"OFC",
+        primary:"#241a78",
+        secondary:"#e33d43",
+        keeper:"#241a78",
+        badge:"OD"
+    },
+
+    jamshedpur:{
+        name:"Jamshedpur FC",
+        short:"JFC",
+        primary:"#d71920",
+        secondary:"#102b55",
+        keeper:"#d71920",
+        badge:"JFC"
+    },
+
+    northeast:{
+        name:"NorthEast United",
+        short:"NEUFC",
+        primary:"#e9b51d",
+        secondary:"#15285d",
+        keeper:"#e9b51d",
+        badge:"NE"
+    },
+
+    punjab:{
+        name:"Punjab FC",
+        short:"PFC",
+        primary:"#ed2939",
+        secondary:"#f2b300",
+        keeper:"#ed2939",
+        badge:"PFC"
+    }
+};
+
+let selectedYour = null;
+let selectedOpponent = null;
+
+
+/* =====================================================
+   TEAM SELECTION UI
+===================================================== */
+
+function createTeamCards(){
+
+    const your =
+        $("yourTeams");
+
+    const opponent =
+        $("opponentTeams");
+
+    your.innerHTML="";
+    opponent.innerHTML="";
+
+    Object.entries(TEAMS)
+    .forEach(([id,team])=>{
+
+        your.appendChild(
+            createTeamCard(id,team,"your")
+        );
+
+        opponent.appendChild(
+            createTeamCard(id,team,"opponent")
+        );
+    });
+}
+
+function createTeamCard(id,team,type){
+
+    const button =
+        document.createElement("button");
+
+    button.className="teamCard";
+
+    button.dataset.team=id;
+
+    button.innerHTML=`
+        <div
+            class="teamBadge"
+            style="
+                background:${team.primary};
+                color:${team.secondary};
+                border-color:${team.secondary};
+            ">
+            ${team.badge}
+        </div>
+        <div class="teamName">${team.name}</div>
+    `;
+
+    button.onclick=()=>{
+
+        if(type==="your"){
+
+            selectedYour=id;
+
+            document
+            .querySelectorAll("#yourTeams .teamCard")
+            .forEach(x=>
+                x.classList.remove("selected")
+            );
+
+            button.classList.add("selected");
+
+        }else{
+
+            selectedOpponent=id;
+
+            document
+            .querySelectorAll("#opponentTeams .teamCard")
+            .forEach(x=>
+                x.classList.remove("selected")
+            );
+
+            button.classList.add("selected");
+        }
+
+        checkTeamSelection();
+    };
+
+    return button;
+}
+
+function checkTeamSelection(){
+
+    $("startMatch").disabled =
+        !selectedYour ||
+        !selectedOpponent ||
+        selectedYour===selectedOpponent;
+}
+
+createTeamCards();
+
+
+/* =====================================================
+   GAME STATE
+===================================================== */
+
+const game = {
+
+    active:false,
+
+    phase:"selection",
+
+    round:1,
+
+    maxRounds:5,
+
+    yourScore:0,
+
+    opponentScore:0,
+
+    yourTaken:false,
+
+    opponentTaken:false,
+
+    suddenDeath:false,
+
+    yourTeam:null,
+
+    opponentTeam:null,
+
+    difficulty:"medium"
+};
+
+
+/* =====================================================
+   DIFFICULTY
+===================================================== */
+
+const DIFFICULTY = {
+
+    easy:{
+        reaction:.48,
+        reach:.48,
+        diveReach:1.0,
+        error:.45
+    },
+
+    medium:{
+        reaction:.30,
+        reach:.62,
+        diveReach:1.35,
+        error:.28
+    },
+
+    hard:{
+        reaction:.16,
+        reach:.82,
+        diveReach:1.7,
+        error:.15
+    }
+};
+
+
+/* =====================================================
+   BALL
+===================================================== */
+
+const ball = {
+
+    active:false,
+
+    x:0,
+
+    z:.1,
+
+    targetX:0,
+
+    targetZ:1,
+
+    startTime:0,
+
+    duration:1,
+
+    owner:null,
+
+    trail:[]
+};
+
+
+/* =====================================================
+   KEEPER
+===================================================== */
+
+const keeper = {
+
+    x:0,
+
+    startX:0,
+
+    targetX:0,
+
+    active:false,
+
+    startTime:0,
+
+    duration:.45,
+
+    direction:0
+};
+
+
+/* =====================================================
+   WORLD
+===================================================== */
+
+const WORLD = {
+
+    goalLeft:-3.66,
+
+    goalRight:3.66,
+
+    goalHeight:2.44
+};
+
+
+/* =====================================================
+   STADIUM IMAGE
+===================================================== */
+
+const stadium =
+    new Image();
+
+let stadiumReady=false;
+
+stadium.onload=()=>{
+    stadiumReady=true;
+};
+
+stadium.src="assets/bg.png";
+
+
+/* =====================================================
+   UI
+===================================================== */
+
+function status(main,sub=""){
+
+    $("statusMain").textContent=main;
+    $("statusSub").textContent=sub;
+}
+
+function showShootControls(show){
+
+    $("shootControls").style.display =
+        show ? "flex" : "none";
+}
+
+function showDefendControls(show){
+
+    $("defendControls").style.display =
+        show ? "flex" : "none";
+}
+
+function updateDifficulty(){
+
+    game.difficulty =
+        $("difficulty").value;
+}
+
+function setupScoreSlots(){
+
+    $("yourSlots").innerHTML="";
+    $("oppSlots").innerHTML="";
+
+    for(let i=0;i<game.maxRounds;i++){
+
+        const a =
+            document.createElement("span");
+
+        a.className="slot";
+
+        $("yourSlots").appendChild(a);
+
+        const b =
+            document.createElement("span");
+
+        b.className="slot";
+
+        $("oppSlots").appendChild(b);
+    }
+}
+
+function updateScoreboard(){
+
+    $("yourName").textContent =
+        game.yourTeam
+        ? game.yourTeam.short
+        : "YOU";
+
+    $("oppName").textContent =
+        game.opponentTeam
+        ? game.opponentTeam.short
+        : "CPU";
+
+    $("yourScore").textContent =
+        game.yourScore;
+
+    $("oppScore").textContent =
+        game.opponentScore;
+
+    $("round").textContent =
+        game.round;
+
+    $("maxRound").textContent =
+        game.maxRounds;
+}
+
+function markSlot(team,result){
+
+    const container =
+        team==="you"
+        ? $("yourSlots")
+        : $("oppSlots");
+
+    const index =
+        game.round-1;
+
+    const slot =
+        container.children[index];
+
+    if(slot)
+        slot.className =
+            "slot "+result;
+}
+
+
+/* =====================================================
+   START GAME
+===================================================== */
+
+$("startMatch").onclick=()=>{
+
+    if(
+        !selectedYour ||
+        !selectedOpponent ||
+        selectedYour===selectedOpponent
+    )
+        return;
+
+    game.yourTeam =
+        TEAMS[selectedYour];
+
+    game.opponentTeam =
+        TEAMS[selectedOpponent];
+
+    updateDifficulty();
+
+    document.documentElement
+    .style.setProperty(
+        "--accent",
+        game.yourTeam.primary
+    );
+
+    document.documentElement
+    .style.setProperty(
+        "--accent2",
+        game.yourTeam.secondary
+    );
+
+    $("teamScreen").style.display="none";
+
+    $("difficultyBox").style.display="flex";
+
+    resetGameState();
+
+    game.active=true;
+
+    startYourPenalty();
+};
+
+
+/* =====================================================
+   RESET
+===================================================== */
+
+function resetGameState(){
+
+    game.phase="selection";
+
+    game.round=1;
+
+    game.maxRounds=5;
+
+    game.yourScore=0;
+
+    game.opponentScore=0;
+
+    game.yourTaken=false;
+
+    game.opponentTaken=false;
+
+    game.suddenDeath=false;
+
+    ball.active=false;
+
+    keeper.x=0;
+    keeper.active=false;
+
+    setupScoreSlots();
+
+    updateScoreboard();
+}
+
+function resetAll(){
+
+    game.active=false;
+
+    game.phase="selection";
+
+    showShootControls(false);
+    showDefendControls(false);
+
+    $("difficultyBox").style.display="none";
+
+    $("teamScreen").style.display="flex";
+
+    status(
+        "SELECT TEAMS",
+        "Choose your team and opponent"
+    );
+}
+
+
+/* =====================================================
+   CHANGE TEAMS
+===================================================== */
+
+$("changeTeams").onclick=resetAll;
+
+$("resetBtn").onclick=()=>{
+
+    if(!game.yourTeam){
+        resetAll();
+        return;
+    }
+
+    resetGameState();
+
+    game.active=true;
+
+    startYourPenalty();
+};
+
+
+/* =====================================================
+   START YOUR PENALTY
+===================================================== */
+
+function startYourPenalty(){
+
+    game.phase="shoot";
+
+    showShootControls(true);
+    showDefendControls(false);
+
+    ball.active=false;
+
+    keeper.x=0;
+    keeper.active=false;
+
+    status(
+        "YOUR PENALTY",
+        "Select a corner and choose your power"
+    );
+
+    selectZone(
+        document.querySelector(
+            '.zone[data-x="0"][data-z="1.15"]'
+        )
+    );
+}
+
+
+/* =====================================================
+   SHOOT ZONE
+===================================================== */
+
+let selectedZone = {
+    x:0,
+    z:1.15
+};
+
+function selectZone(button){
+
+    document
+    .querySelectorAll(".zone")
+    .forEach(b=>
+        b.classList.remove("selected")
+    );
+
+    button.classList.add("selected");
+
+    selectedZone.x =
+        Number(button.dataset.x);
+
+    selectedZone.z =
+        Number(button.dataset.z);
+}
+
+document
+.querySelectorAll(".zone")
+.forEach(button=>{
+
+    button.onclick=()=>{
+        selectZone(button);
+    };
+
+});
+
+
+/* =====================================================
+   SHOOT
+===================================================== */
+
+$("shootBtn").onclick=()=>{
+
+    if(
+        !game.active ||
+        game.phase!=="shoot" ||
+        ball.active
+    )
+        return;
+
+    shootBall(
+        selectedZone.x,
+        selectedZone.z,
+        Number($("power").value),
+        "you"
+    );
+};
+
+
+/* =====================================================
+   BALL SHOOT
+===================================================== */
+
+function shootBall(x,z,power,owner){
+
+    const cfg =
+        DIFFICULTY[game.difficulty];
+
+    ball.active=true;
+
+    ball.owner=owner;
+
+    ball.x=0;
+
+    ball.z=.12;
+
+    ball.targetX=x;
+
+    ball.targetZ=z;
+
+    /*
+       Small natural shot variation.
+    */
+
+    const variation =
+        owner==="you"
+        ? cfg.error*(1-power/180)
+        : .18;
+
+    ball.targetX =
+        clamp(
+            x+rand(-variation,variation),
+            -3.7,
+            3.7
+        );
+
+    ball.targetZ =
+        clamp(
+            z+rand(-variation,variation),
+            .05,
+            2.43
+        );
+
+    const speed =
+        18+
+        power*.12;
+
+    ball.duration =
+        11/speed;
+
+    ball.startTime =
+        performance.now();
+
+    ball.trail=[];
+
+    game.phase =
+        owner==="you"
+        ? "playerFlight"
+        : "cpuFlight";
+
+    showShootControls(false);
+    showDefendControls(false);
+
+    if(owner==="you"){
+
+        status(
+            "SHOT!",
+            game.opponentTeam.name+
+            " goalkeeper reacts..."
+        );
+
+        startCPUKeeper();
+    }else{
+
+        status(
+            "CPU SHOOTS!",
+            "Choose where to dive"
+        );
+    }
+}
+
+
+/* =====================================================
+   CPU KEEPER
+===================================================== */
+
+function startCPUKeeper(){
+
+    const cfg =
+        DIFFICULTY[game.difficulty];
+
+    /*
+       CPU keeper looks at the actual
+       shot target, but has uncertainty.
+    */
+
+    const prediction =
+        rand(
+            -cfg.error,
+            cfg.error
+        );
+
+    keeper.startX=0;
+
+    keeper.x=0;
+
+    keeper.targetX =
+        clamp(
+            ball.targetX+prediction,
+            -3.35,
+            3.35
+        );
+
+    keeper.direction =
+        keeper.targetX < -.6
+        ? -1
+        : keeper.targetX > .6
+        ? 1
+        : 0;
+
+    keeper.startTime =
+        performance.now()+
+        cfg.reaction*1000;
+
+    keeper.duration =
+        .42;
+
+    keeper.active=true;
+}
+
+
+/* =====================================================
+   PLAYER GOALKEEPER
+===================================================== */
+
+function beginDefense(){
+
+    game.phase="defend";
+
+    keeper.x=0;
+
+    keeper.active=false;
+
+    showShootControls(false);
+    showDefendControls(true);
+
+    status(
+        game.opponentTeam.short+
+        " PENALTY",
+        "Choose LEFT, CENTER or RIGHT"
+    );
+
+    /*
+       If player does nothing,
+       goalkeeper stays center.
+    */
+
+    setTimeout(()=>{
+
+        if(
+            game.active &&
+            game.phase==="defend"
+        ){
+
+            chooseDive(0);
+        }
+
+    },2200);
+}
+
+
+/* =====================================================
+   DIVE
+===================================================== */
+
+document
+.querySelectorAll(".diveBtn")
+.forEach(button=>{
+
+    button.onclick=()=>{
+
+        chooseDive(
+            Number(button.dataset.dir)
+        );
+
+    };
+
+});
+
+
+function chooseDive(direction){
+
+    if(
+        !game.active ||
+        game.phase!=="defend"
+    )
+        return;
+
+    keeper.direction=direction;
+
+    keeper.startX=keeper.x;
+
+    keeper.targetX =
+        direction===-1
+        ? -3
+        : direction===1
+        ? 3
+        : 0;
+
+    keeper.startTime =
+        performance.now();
+
+    keeper.duration=.38;
+
+    keeper.active=true;
+
+    showDefendControls(false);
+
+    status(
+        direction<0
+        ? "DIVING LEFT"
+        : direction>0
+        ? "DIVING RIGHT"
+        : "CENTER",
+        "Watch the shot..."
+    );
+
+    /*
+       CPU shoots after the player
+       has selected the dive.
+    */
+
+    setTimeout(()=>{
+
+        if(
+            game.active &&
+            game.phase==="defend"
+        ){
+
+            cpuShoot();
+
+        }
+
+    },220);
+}
+
+
+/* =====================================================
+   CPU SHOOT
+===================================================== */
+
+function cpuShoot(){
+
+    if(
+        !game.active ||
+        game.phase!=="defend"
+    )
+        return;
+
+    /*
+       CPU deliberately uses all areas.
+    */
+
+    const r=Math.random();
+
+    let x;
+
+    if(r<.34){
+
+        x=rand(-3.3,-2.1);
+
+    }else if(r<.68){
+
+        x=rand(2.1,3.3);
+
+    }else if(r<.86){
+
+        x=rand(-.7,.7);
+
+    }else{
+
+        x=rand(-2.7,2.7);
+    }
+
+    const z =
+        Math.random()<.35
+        ? rand(1.65,2.3)
+        : rand(.35,1.45);
+
+    const power =
+        rand(65,95);
+
+    shootBall(
+        x,
+        z,
+        power,
+        "cpu"
+    );
+}
+
+
+/* =====================================================
+   UPDATE BALL
+===================================================== */
+
+function updateBall(now){
+
+    if(!ball.active)
+        return;
+
+    const t =
+        clamp(
+            (now-ball.startTime)/
+            1000/
+            ball.duration,
+            0,
+            1
+        );
+
+    ball.x =
+        lerp(
+            0,
+            ball.targetX,
+            easeOut(t)
+        );
+
+    /*
+       Parabolic flight.
+    */
+
+    const arc =
+        Math.sin(Math.PI*t);
+
+    ball.z =
+        lerp(
+            .12,
+            ball.targetZ,
+            t
+        )+
+        arc*.8;
+
+    const screen =
+        ballScreen(t);
+
+    ball.trail.push({
+        x:screen.x,
+        y:screen.y
+    });
+
+    if(ball.trail.length>12)
+        ball.trail.shift();
+
+    if(t>=1){
+
+        ball.active=false;
+
+        resolveShot();
+    }
+}
+
+
+/* =====================================================
+   UPDATE KEEPER
+===================================================== */
+
+function updateKeeper(now){
+
+    if(!keeper.active)
+        return;
+
+    if(
+        ball.owner==="you" &&
+        now<keeper.startTime
+    ){
+
+        return;
+    }
+
+    const t =
+        clamp(
+            (now-keeper.startTime)/
+            1000/
+            keeper.duration,
+            0,
+            1
+        );
+
+    keeper.x =
+        lerp(
+            keeper.startX,
+            keeper.targetX,
+            easeOut(t)
+        );
+
+    if(t>=1)
+        keeper.active=false;
+}
+
+
+/* =====================================================
+   SHOT RESOLUTION
+===================================================== */
+
+function resolveShot(){
+
+    const x=ball.targetX;
+
+    const z=ball.targetZ;
+
+    /*
+       Outside goal.
+    */
+
+    if(
+        x<-3.66 ||
+        x>3.66 ||
+        z<0 ||
+        z>2.44
+    ){
+
+        finishShot(
+            false,
+            x<-3.66 || x>3.66
+            ? "WIDE!"
+            : "OVER THE BAR!"
+        );
+
+        return;
+    }
+
+    /*
+       Determine goalkeeper save.
+    */
+
+    const cfg =
+        DIFFICULTY[game.difficulty];
+
+    const distance =
+        Math.abs(
+            x-keeper.x
+        );
+
+    let reach =
+        keeper.direction===0
+        ? cfg.reach
+        : cfg.diveReach;
+
+    /*
+       Direction matters.
+       A keeper diving left cannot
+       magically save right side.
+    */
+
+    if(keeper.direction===-1 && x>-.65)
+        reach=.12;
+
+    if(keeper.direction===1 && x<.65)
+        reach=.12;
+
+    if(
+        keeper.direction===0 &&
+        Math.abs(x)>1.0
+    )
+        reach=.12;
+
+    /*
+       High corners reduce reach.
+    */
+
+    if(z>1.6)
+        reach*=.72;
+
+    const saved =
+        distance<=reach;
+
+    if(saved){
+
+        finishShot(
+            false,
+            ball.owner==="you"
+            ? "SAVED!"
+            : "GREAT SAVE!"
+        );
+
+    }else{
+
+        finishShot(
+            true,
+            ball.owner==="you"
+            ? "GOAL!"
+            : "CPU SCORES!"
+        );
+    }
+}
+
+
+/* =====================================================
+   FINISH SHOT
+===================================================== */
+
+function finishShot(scored,text){
+
+    const owner=ball.owner;
+
+    if(owner==="you"){
+
+        if(scored){
+
+            game.yourScore++;
+
+            markSlot(
+                "you",
+                "goal"
+            );
+
+        }else{
+
+            markSlot(
+                "you",
+                "miss"
+            );
+        }
+
+        game.yourTaken=true;
+
+    }else{
+
+        if(scored){
+
+            game.opponentScore++;
+
+            markSlot(
+                "opponent",
+                "goal"
+            );
+
+        }else{
+
+            markSlot(
+                "opponent",
+                "miss"
+            );
+        }
+
+        game.opponentTaken=true;
+    }
+
+    updateScoreboard();
+
+    status(
+        text,
+        `${game.yourTeam.short} ${game.yourScore} - ${game.opponentScore} ${game.opponentTeam.short}`
+    );
+
+    setTimeout(nextTurn,1000);
+}
+
+
+/* =====================================================
+   NEXT TURN
+===================================================== */
+
+function nextTurn(){
+
+    ball.active=false;
+
+    keeper.active=false;
+
+    /*
+       Your penalty finished.
+       Now CPU takes penalty.
+    */
+
+    if(
+        game.yourTaken &&
+        !game.opponentTaken
+    ){
+
+        beginDefense();
+
+        return;
+    }
+
+    /*
+       Both penalties completed.
+    */
+
+    if(
+        game.yourTaken &&
+        game.opponentTaken
+    ){
+
+        /*
+           Normal rounds.
+        */
+
+        if(
+            game.round>=game.maxRounds &&
+            game.yourScore!==game.opponentScore
+        ){
+
+            finishGame();
+
+            return;
+        }
+
+        /*
+           Sudden death.
+        */
+
+        if(
+            game.round>=game.maxRounds &&
+            game.yourScore===game.opponentScore
+        ){
+
+            game.suddenDeath=true;
+
+            game.maxRounds++;
+
+        }
+
+        game.round++;
+
+        game.yourTaken=false;
+
+        game.opponentTaken=false;
+
+        setupScoreSlots();
+
+        updateScoreboard();
+
+        startYourPenalty();
+
+        if(game.suddenDeath){
+
+            status(
+                "SUDDEN DEATH",
+                "One penalty each — winner takes it"
+            );
+
+        }
+
+    }
+}
+
+
+/* =====================================================
+   GAME OVER
+===================================================== */
+
+function finishGame(){
+
+    game.active=false;
+
+    showShootControls(false);
+    showDefendControls(false);
+
+    let title;
+
+    if(
+        game.yourScore>
+        game.opponentScore
+    ){
+
+        title=
+            `${game.yourTeam.name.toUpperCase()} WIN!`;
+
+    }else{
+
+        title=
+            `${game.opponentTeam.name.toUpperCase()} WIN!`;
+    }
+
+    status(
+        title,
+        `${game.yourScore} - ${game.opponentScore} • Press RESET`
+    );
+}
+
+
+/* =====================================================
+   PERSPECTIVE
+===================================================== */
+
+function goalX(worldX){
+
+    return W/2+
+        worldX*80;
+}
+
+function goalY(worldZ){
+
+    return 320-
+        worldZ*68;
+}
+
+function ballScreen(t){
+
+    const scale =
+        lerp(
+            170,
+            80,
+            t
+        );
+
+    return {
+
+        x:
+            W/2+
+            ball.x*scale,
+
+        y:
+            lerp(
+                620,
+                320,
+                t
+            )-
+            ball.z*72
+    };
+}
+
+
+/* =====================================================
+   BACKGROUND
+===================================================== */
+
+function drawBackground(){
+
+    /*
+       IMPORTANT:
+       The stadium image is ONLY drawn in the
+       upper stadium/crowd area.
+
+       We do NOT stretch the entire bg.png
+       over the football pitch.
+    */
+
+    const stadiumHeight=355;
+
+    if(stadiumReady){
+
+        /*
+           Crop the upper portion of bg.png.
+        */
+
+        const sourceHeight =
+            stadium.height*.58;
+
+        ctx.drawImage(
+            stadium,
+            0,
+            0,
+            stadium.width,
+            sourceHeight,
+            0,
+            0,
+            W,
+            stadiumHeight
+        );
+
+    }else{
+
+        const g=
+            ctx.createLinearGradient(
+                0,0,0,355
+            );
+
+        g.addColorStop(
+            0,
+            "#162633"
+        );
+
+        g.addColorStop(
+            1,
+            "#293b3c"
+        );
+
+        ctx.fillStyle=g;
+
+        ctx.fillRect(
+            0,
+            0,
+            W,
+            stadiumHeight
+        );
+    }
+
+    /*
+       Dark stadium gradient.
+    */
+
+    const shade=
+        ctx.createLinearGradient(
+            0,
+            0,
+            0,
+            355
+        );
+
+    shade.addColorStop(
+        0,
+        "rgba(0,0,0,.25)"
+    );
+
+    shade.addColorStop(
+        1,
+        "rgba(0,0,0,.05)"
+    );
+
+    ctx.fillStyle=shade;
+
+    ctx.fillRect(
+        0,
+        0,
+        W,
+        355
+    );
+}
+
+
+/* =====================================================
+   PITCH
+===================================================== */
+
+function drawPitch(){
+
+    const top=300;
+
+    const g=
+        ctx.createLinearGradient(
+            0,
+            top,
+            0,
+            H
+        );
+
+    g.addColorStop(
+        0,
+        "#23773b"
+    );
+
+    g.addColorStop(
+        1,
+        "#0c4824"
+    );
+
+    ctx.fillStyle=g;
+
+    ctx.fillRect(
+        0,
+        top,
+        W,
+        H-top
+    );
+
+    /*
+       Grass stripes.
+    */
+
+    for(let i=0;i<12;i++){
+
+        ctx.fillStyle=
+            i%2===0
+            ? "rgba(255,255,255,.025)"
+            : "rgba(0,0,0,.035)";
+
+        ctx.fillRect(
+            0,
+            top+i*38,
+            W,
+            38
+        );
+    }
+
+    /*
+       Penalty box.
+    */
+
+    ctx.strokeStyle=
+        "rgba(255,255,255,.6)";
+
+    ctx.lineWidth=2;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        390,
+        320
+    );
+
+    ctx.lineTo(
+        890,
+        320
+    );
+
+    ctx.lineTo(
+        1030,
+        720
+    );
+
+    ctx.moveTo(
+        390,
+        320
+    );
+
+    ctx.lineTo(
+        250,
+        720
+    );
+
+    ctx.stroke();
+
+    /*
+       Penalty spot.
+    */
+
+    ctx.fillStyle="white";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        W/2,
+        625,
+        4,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+}
+
+
+/* =====================================================
+   GOAL
+===================================================== */
+
+function drawGoal(){
+
+    const left=
+        goalX(-3.66);
+
+    const right=
+        goalX(3.66);
+
+    const top=
+        goalY(2.44);
+
+    const bottom=
+        goalY(0);
+
+    /*
+       Net.
+    */
+
+    ctx.save();
+
+    ctx.strokeStyle=
+        "rgba(255,255,255,.28)";
+
+    ctx.lineWidth=1;
+
+    for(
+        let x=left;
+        x<=right;
+        x+=17
+    ){
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            x,
+            top
+        );
+
+        ctx.lineTo(
+            x,
+            bottom
+        );
+
+        ctx.stroke();
+    }
+
+    for(
+        let y=top;
+        y<=bottom;
+        y+=14
+    ){
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            left,
+            y
+        );
+
+        ctx.lineTo(
+            right,
+            y
+        );
+
+        ctx.stroke();
+    }
+
+    ctx.restore();
+
+    /*
+       Goal posts.
+    */
+
+    ctx.strokeStyle="#f4f5f6";
+
+    ctx.lineWidth=7;
+
+    ctx.lineCap="round";
+
+    ctx.beginPath();
+
+    ctx.moveTo(left,bottom);
+    ctx.lineTo(left,top);
+    ctx.lineTo(right,top);
+    ctx.lineTo(right,bottom);
+
+    ctx.stroke();
+
+    ctx.strokeStyle="#ffffff55";
+
+    ctx.lineWidth=2;
+
+    ctx.beginPath();
+
+    ctx.moveTo(left-1,bottom);
+    ctx.lineTo(left-1,top);
+    ctx.lineTo(right-1,top);
+
+    ctx.stroke();
+}
+
+
+/* =====================================================
+   GOALKEEPER
+===================================================== */
+
+function drawKeeper(){
+
+    const team =
+        game.opponentTeam ||
+        {
+            primary:"#f4c400",
+            secondary:"#123d91"
+        };
+
+    const x=
+        goalX(keeper.x);
+
+    const y=300;
+
+    const movement=
+        keeper.targetX-
+        keeper.startX;
+
+    const lean=
+        clamp(
+            movement/3,
+            -1,
+            1
+        );
+
+    ctx.save();
+
+    ctx.translate(
+        x,
+        y
+    );
+
+    if(keeper.active){
+
+        ctx.rotate(
+            lean*.28
+        );
+    }
+
+    /*
+       Shadow.
+    */
+
+    ctx.fillStyle="#0008";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        0,
+        64,
+        38+
+        Math.abs(lean)*30,
+        7,
+        0,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+    /*
+       Legs.
+    */
+
+    ctx.fillStyle=
+        team.secondary;
+
+    ctx.fillRect(
+        -19,
+        23,
+        14,
+        41
+    );
+
+    ctx.fillRect(
+        5,
+        23,
+        14,
+        41
+    );
+
+    /*
+       Body.
+    */
+
+    ctx.fillStyle=
+        team.primary;
+
+    ctx.beginPath();
+
+    ctx.roundRect(
+        -25,
+        -43,
+        50,
+        70,
+        8
+    );
+
+    ctx.fill();
+
+    /*
+       Jersey center stripe.
+    */
+
+    ctx.fillStyle=
+        team.secondary;
+
+    ctx.fillRect(
+        -4,
+        -43,
+        8,
+        70
+    );
+
+    /*
+       Arms.
+    */
+
+    const stretch=
+        31+
+        Math.abs(lean)*40;
+
+    ctx.strokeStyle=
+        team.primary;
+
+    ctx.lineWidth=14;
+
+    ctx.lineCap="round";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        -21,
+        -27
+    );
+
+    ctx.lineTo(
+        lean<0
+        ? -stretch
+        : -31,
+        -18
+    );
+
+    ctx.moveTo(
+        21,
+        -27
+    );
+
+    ctx.lineTo(
+        lean>0
+        ? stretch
+        : 31,
+        -18
+    );
+
+    ctx.stroke();
+
+    /*
+       Gloves.
+    */
+
+    ctx.fillStyle="#f0f3f4";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        lean<0
+        ? -stretch
+        : -31,
+        -18,
+        9,
+        0,
+        Math.PI*2
+    );
+
+    ctx.arc(
+        lean>0
+        ? stretch
+        : 31,
+        -18,
+        9,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+    /*
+       Head.
+    */
+
+    ctx.fillStyle="#b8795d";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        -61,
+        17,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+    /*
+       Hair.
+    */
+
+    ctx.fillStyle="#17191c";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        -67,
+        17,
+        Math.PI,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+    ctx.restore();
+}
+
+
+/* =====================================================
+   BALL
+===================================================== */
+
+function drawBall(){
+
+    if(!ball.active)
+        return;
+
+    /*
+       Trail.
+    */
+
+    ball.trail.forEach((p,i)=>{
+
+        const alpha =
+            (i/ball.trail.length)*.2;
+
+        ctx.fillStyle=
+            `rgba(255,255,255,${alpha})`;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            p.x,
+            p.y,
+            5,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+    });
+
+    const t=
+        clamp(
+            (performance.now()-ball.startTime)/
+            1000/
+            ball.duration,
+            0,
+            1
+        );
+
+    const p=
+        ballScreen(t);
+
+    const r=
+        lerp(
+            17,
+            7,
+            t
+        );
+
+    /*
+       Shadow.
+    */
+
+    ctx.fillStyle="#0007";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        p.x,
+        p.y+12,
+        r*1.2,
+        r*.35,
+        0,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+    /*
+       Ball.
+    */
+
+    const g=
+        ctx.createRadialGradient(
+            p.x-r*.3,
+            p.y-r*.35,
+            1,
+            p.x,
+            p.y,
+            r
+        );
+
+    g.addColorStop(
+        0,
+        "#fff"
+    );
+
+    g.addColorStop(
+        .75,
+        "#e2e6e8"
+    );
+
+    g.addColorStop(
+        1,
+        "#8c969c"
+    );
+
+    ctx.fillStyle=g;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        p.x,
+        p.y,
+        r,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+    ctx.strokeStyle="#222";
+
+    ctx.lineWidth=
+        Math.max(
+            .6,
+            r*.08
+        );
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        p.x-r*.45,
+        p.y
+    );
+
+    ctx.lineTo(
+        p.x+r*.45,
+        p.y
+    );
+
+    ctx.moveTo(
+        p.x,
+        p.y-r*.45
+    );
+
+    ctx.lineTo(
+        p.x,
+        p.y+r*.45
+    );
+
+    ctx.stroke();
+}
+
+
+/* =====================================================
+   SHOOT TARGET
+===================================================== */
+
+function drawTarget(){
+
+    if(game.phase!=="shoot")
+        return;
+
+    const x=
+        goalX(
+            selectedZone.x
+        );
+
+    const y=
+        goalY(
+            selectedZone.z
+        );
+
+    ctx.save();
+
+    ctx.strokeStyle=
+        game.yourTeam
+        ? game.yourTeam.primary
+        : "#ffd43b";
+
+    ctx.lineWidth=3;
+
+    ctx.shadowColor=
+        ctx.strokeStyle;
+
+    ctx.shadowBlur=16;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x,
+        y,
+        18,
+        0,
+        Math.PI*2
+    );
+
+    ctx.stroke();
+
+    ctx.shadowBlur=0;
+
+    ctx.beginPath();
+
+    ctx.moveTo(x-25,y);
+    ctx.lineTo(x+25,y);
+
+    ctx.moveTo(x,y-25);
+    ctx.lineTo(x,y+25);
+
+    ctx.stroke();
+
+    ctx.restore();
+}
+
+
+/* =====================================================
+   RENDER
+===================================================== */
+
+function render(){
+
+    ctx.clearRect(
+        0,
+        0,
+        W,
+        H
+    );
+
+    drawBackground();
+
+    drawPitch();
+
+    drawGoal();
+
+    drawKeeper();
+
+    drawTarget();
+
+    drawBall();
+
+    /*
+       Bottom vignette.
+    */
+
+    const vignette=
+        ctx.createLinearGradient(
+            0,
+            450,
+            0,
+            H
+        );
+
+    vignette.addColorStop(
+        0,
+        "rgba(0,0,0,0)"
+    );
+
+    vignette.addColorStop(
+        1,
+        "rgba(0,0,0,.25)"
+    );
+
+    ctx.fillStyle=vignette;
+
+    ctx.fillRect(
+        0,
+        450,
+        W,
+        H-450
+    );
+}
+
+
+/* =====================================================
+   LOOP
+===================================================== */
+
+function loop(now){
+
+    updateBall(now);
+
+    updateKeeper(now);
+
+    render();
+
+    requestAnimationFrame(loop);
+}
+
+requestAnimationFrame(loop);
+
+
+/* =====================================================
+   DIFFICULTY
+===================================================== */
+
+$("difficulty").onchange=()=>{
+
+    updateDifficulty();
+
+    if(game.active){
+
+        status(
+            "DIFFICULTY UPDATED",
+            "Keeper AI adjusted for the next shot"
+        );
+
+    }
+};
+
+
+/* =====================================================
+   INITIAL
+===================================================== */
+
+status(
+    "SELECT TEAMS",
+    "Choose your team and opponent"
+);
+
+</script>
+
+</body>
+</html>
+
